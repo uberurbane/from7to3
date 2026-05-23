@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Token Learning Control — Govern AI Like Capital",
   description:
-    "Token Learning Control is the operating system for governing AI-native organizations. Diagnose Coordination Debt™, govern cognitive capital, and move from AI experimentation to AI accountability.",
+    "Token Learning Control is the operating system for governing AI-native organizations. Diagnose coordination debt, govern cognitive capital, and move from AI experimentation to AI accountability.",
 };
 
 export default function RootLayout({

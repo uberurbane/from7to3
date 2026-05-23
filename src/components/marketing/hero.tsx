@@ -1,0 +1,50 @@
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+
+export default function Hero() {
+  return (
+    <section className="flex min-h-[calc(100vh-4rem)] items-center px-6 pt-20 pb-16 lg:px-8">
+      <div className="mx-auto w-full max-w-4xl text-center">
+        <span className="mb-7 inline-flex items-center rounded-full border border-teal/20 bg-teal/5 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">
+          The Token Learning Control System
+        </span>
+
+        <h1 className="mb-7 text-5xl font-bold leading-[1.05] tracking-[-0.025em] text-foreground sm:text-6xl lg:text-[4.5rem]">
+          AI does not eliminate coordination.
+          <br />
+          <span className="text-teal">It makes coordination measurable.</span>
+        </h1>
+
+        <p className="mx-auto mb-10 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
+          Token Learning Control helps enterprises govern AI execution through
+          measurable operating discipline, token allocation, runtime controls,
+          and financial accountability.
+        </p>
+
+        <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Button
+            asChild
+            className="h-10 rounded-md bg-teal px-6 text-[13px] font-semibold tracking-[0.01em] text-teal-foreground shadow-none hover:bg-teal/88"
+          >
+            <Link href="/templates#lead-capture">
+              Get the TLC Starter Kit
+              <ArrowRight className="ml-1.5 size-3.5" />
+            </Link>
+          </Button>
+          <Button
+            asChild
+            variant="outline"
+            className="h-10 rounded-md border-border/80 px-6 text-[13px] font-medium text-muted-foreground hover:border-teal/30 hover:bg-transparent hover:text-foreground"
+          >
+            <Link href="/system">Explore the System</Link>
+          </Button>
+        </div>
+
+        <p className="mt-7 text-xs text-muted-foreground/55">
+          Built for CEOs, CFOs, CIOs, CTOs, and AI Product transformation leaders.
+        </p>
+      </div>
+    </section>
+  );
+}

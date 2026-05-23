@@ -1,0 +1,143 @@
+import Link from "next/link";
+import { ArrowRight, Mail, Building2, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
+
+const inquiryTypes = [
+  {
+    icon: Building2,
+    title: "Enterprise Assessments",
+    description:
+      "Coordination Debt™ diagnostics and AI governance readiness assessments for organizations with active AI portfolios.",
+  },
+  {
+    icon: Users,
+    title: "Workshops",
+    description:
+      "Structured working sessions for executive teams on token economics, AI governance frameworks, and operating model design.",
+  },
+  {
+    icon: Mail,
+    title: "Advisory",
+    description:
+      "Ongoing advisory engagements for CIOs, AI leads, and transformation teams building governed AI execution capacity.",
+  },
+];
+
+export default function ContactPage() {
+  return (
+    <>
+      <Header />
+      <main className="flex-1 pt-16">
+
+        {/* Hero */}
+        <section className="px-6 py-24 lg:px-8 lg:py-32">
+          <div className="mx-auto max-w-4xl text-center">
+            <span className="mb-6 inline-flex items-center rounded-full border border-teal/20 bg-teal/5 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">
+              Enterprise Inquiries
+            </span>
+            <h1 className="mb-6 text-4xl font-bold leading-[1.06] tracking-[-0.02em] text-foreground sm:text-5xl lg:text-6xl">
+              For workshops, assessments,
+              <br className="hidden sm:block" />
+              and enterprise inquiries.
+            </h1>
+            <p className="mx-auto mb-10 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
+              Token Learning Control works with organizations that are ready to
+              move from AI experimentation to governed AI execution. Reach out
+              to start the conversation.
+            </p>
+            <Button
+              asChild
+              className="h-10 rounded-md bg-teal px-6 text-[13px] font-semibold tracking-[0.01em] text-teal-foreground hover:bg-teal/88"
+            >
+              <Link href="mailto:hello@tokenlearningcontrol.com">
+                hello@tokenlearningcontrol.com
+                <ArrowRight className="ml-1.5 size-3.5" />
+              </Link>
+            </Button>
+            <p className="mt-5 text-xs text-muted-foreground/50">
+              We respond within two business days.
+            </p>
+          </div>
+        </section>
+
+        {/* Inquiry types */}
+        <section className="border-t border-border px-6 py-24 lg:px-8 lg:py-28">
+          <div className="mx-auto max-w-5xl">
+            <div className="mb-14">
+              <p className="mb-4 text-xs font-semibold tracking-[0.2em] text-teal uppercase">
+                How We Work
+              </p>
+              <h2 className="max-w-xl text-3xl font-bold leading-tight tracking-[-0.015em] text-foreground sm:text-4xl">
+                Engagements for leaders who govern AI execution.
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+              {inquiryTypes.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={item.title}
+                    className="flex flex-col gap-4 rounded-md border border-border bg-white p-6 shadow-sm"
+                  >
+                    <div className="flex h-9 w-9 items-center justify-center rounded-sm border border-teal/20 bg-teal/5">
+                      <Icon className="size-4 text-teal" />
+                    </div>
+                    <div>
+                      <h3 className="mb-2 text-sm font-semibold text-foreground">
+                        {item.title}
+                      </h3>
+                      <p className="text-sm leading-6 text-muted-foreground">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="relative overflow-hidden border-t border-border px-6 py-24 lg:px-8 lg:py-32">
+          <div
+            className="pointer-events-none absolute inset-0 -z-10"
+            style={{
+              background:
+                "radial-gradient(ellipse 60% 60% at 50% 50%, oklch(0.65 0.14 195 / 0.05) 0%, transparent 70%)",
+            }}
+          />
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="mb-4 text-xs font-semibold tracking-[0.2em] text-teal uppercase">
+              Start Here
+            </p>
+            <h2 className="mb-5 text-3xl font-bold tracking-[-0.015em] text-foreground sm:text-4xl">
+              Begin with the operating artifacts.
+            </h2>
+            <p className="mx-auto mb-10 max-w-xl text-base leading-7 text-muted-foreground">
+              Before any engagement, the TLC Starter Kit gives your team the
+              diagnostic tools and governance templates to understand your
+              current AI portfolio.
+            </p>
+            <Button
+              asChild
+              className="h-10 rounded-md bg-teal px-7 text-[13px] font-semibold tracking-[0.01em] text-teal-foreground hover:bg-teal/88"
+            >
+              <Link href="/templates#lead-capture">
+                Get the TLC Starter Kit
+                <ArrowRight className="ml-1.5 size-3.5" />
+              </Link>
+            </Button>
+            <p className="mt-5 text-xs text-muted-foreground/50">
+              Free. No account required.
+            </p>
+          </div>
+        </section>
+
+      </main>
+      <Footer />
+    </>
+  );
+}
