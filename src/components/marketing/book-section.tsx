@@ -48,9 +48,9 @@ export default function BookSection() {
             className="group block"
           >
             <img
-              src="/from7to3-book.png"
+              src="/from_7_to_3_book.png"
               alt="From 7 to 3 book cover"
-              className="w-[440px] max-w-full rounded-2xl object-contain shadow-2xl transition-all duration-300 group-hover:-translate-y-1"
+              className="w-[440px] max-w-full object-contain transition-all duration-300 group-hover:-translate-y-1"
             />
           </Link>
         </div>
