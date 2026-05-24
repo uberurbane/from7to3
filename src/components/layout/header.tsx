@@ -24,9 +24,9 @@ export default function Header() {
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="shrink-0">
             <img
-              src="/TLC-Logo.png"
+              src="/tlc-banner.png"
               alt="Token Learning Control"
-              className="h-14 w-auto"
+              className="h-16 w-auto object-contain"
             />
           </Link>
 
@@ -47,7 +47,9 @@ export default function Header() {
               asChild
               className="h-8 bg-teal px-4 text-xs font-semibold tracking-wide text-teal-foreground hover:bg-teal/90"
             >
-              <Link href="/templates#lead-capture">Get Starter Kit</Link>
+              <Link href="/templates#lead-capture">
+                Get Starter Kit
+              </Link>
             </Button>
           </div>
 
@@ -56,7 +58,11 @@ export default function Header() {
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
           >
-            {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            {mobileOpen ? (
+              <X className="size-5" />
+            ) : (
+              <Menu className="size-5" />
+            )}
           </button>
         </div>
       </div>
@@ -74,11 +80,17 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
+
             <Button
               asChild
               className="mt-3 h-9 w-full bg-teal text-xs font-semibold tracking-wide text-teal-foreground hover:bg-teal/90"
             >
-              <Link href="/starter-kit" onClick={() => setMobileOpen(false)}>Get Starter Kit</Link>
+              <Link
+                href="/templates#lead-capture"
+                onClick={() => setMobileOpen(false)}
+              >
+                Get Starter Kit
+              </Link>
             </Button>
           </nav>
         </div>
