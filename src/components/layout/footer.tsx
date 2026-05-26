@@ -9,8 +9,8 @@ const footerLinks = {
   ],
   Resources: [
     { label: "Templates", href: "/templates" },
-    { label: "Executive Workshop", href: "/workshop" },
-    { label: "Diagnostic", href: "/#lead-capture" },
+    //{ label: "Executive Workshop", href: "/workshop" },
+    //{ label: "Diagnostic", href: "/#lead-capture" },
     { label: "Book", href: "/book" },
     { label: "Contact", href: "/contact" },
   ],
