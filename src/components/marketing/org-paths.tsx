@@ -54,7 +54,7 @@ export default function OrgPaths() {
           {instruments.map((inst) => (
             <div
               key={inst.name}
-              className="flex flex-col rounded-md border border-border bg-white p-6 shadow-sm"
+              className="flex flex-col rounded-md border border-border bg-[#F5F0E8] p-6 shadow-sm"
             >
               <h3 className="mb-5 text-sm font-semibold text-foreground">
                 {inst.name}

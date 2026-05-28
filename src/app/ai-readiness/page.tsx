@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Header from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
 import AIReadinessAssessment from "@/components/marketing/ai-readiness-assessment";
 
 export const metadata: Metadata = {
@@ -17,7 +16,7 @@ export default function AIReadinessPage() {
         {/* Hero */}
         <section className="px-6 py-20 lg:px-8 lg:py-24">
           <div className="mx-auto max-w-6xl">
-            <span className="mb-6 inline-flex items-center rounded-full border border-teal/20 bg-teal/5 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">
+            <span className="mb-6 inline-flex items-center rounded-full border border-teal/20 bg-[#9A7A3A]/5 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">
               AI Readiness Assessment
             </span>
             <h1 className="mb-4 max-w-3xl text-4xl font-bold leading-[1.06] tracking-[-0.02em] text-foreground sm:text-5xl">
@@ -38,7 +37,7 @@ export default function AIReadinessPage() {
           </div>
         </section>
       </main>
-      <Footer />
+      
     </>
   );
 }

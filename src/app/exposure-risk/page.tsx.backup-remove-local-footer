@@ -1,0 +1,68 @@
+import type { Metadata } from "next";
+import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
+import ExposureRiskAssessment from "@/components/marketing/exposure-risk-assessment";
+
+export const metadata: Metadata = {
+  title: "AI Exposure Risk Assessment | TLC",
+  description:
+    "Identify your organisation's AI governance exposure, shadow AI risk, spend waste, and board-level risk in 4 minutes.",
+};
+
+const heroBullets = [
+  "Shadow AI usage across your organisation",
+  "Data and compliance exposure from AI vendors",
+  "Unattributed and wasted AI spend",
+  "Governance gaps and accountability failures",
+  "Board-level and competitive risk",
+];
+
+export default function ExposureRiskPage() {
+  return (
+    <>
+      <Header />
+      <main className="flex-1 pt-16">
+        {/* Hero */}
+        <section className="px-6 py-20 lg:px-8 lg:py-24">
+          <div className="mx-auto max-w-6xl">
+            <span className="mb-6 inline-flex items-center rounded-full border border-teal/20 bg-teal/5 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">
+              Exposure Risk
+            </span>
+            <h1 className="mb-4 max-w-3xl text-4xl font-bold leading-[1.06] tracking-[-0.02em] text-foreground sm:text-5xl">
+              Where is your organisation exposed?
+            </h1>
+            <p className="mb-8 max-w-2xl text-base leading-7 text-muted-foreground">
+              Most organisations are already using AI without governance. By the
+              time leadership begins formal AI planning — employees are already
+              using unsanctioned tools, customer data is already entering public
+              models, AI spend is already fragmented, and no one can explain ROI
+              at feature level. This assessment identifies exactly where you
+              stand.
+            </p>
+            <ul className="mb-6 flex flex-col gap-2.5">
+              {heroBullets.map((bullet) => (
+                <li key={bullet} className="flex items-center gap-3">
+                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-teal/25 bg-teal/5">
+                    <div className="h-1.5 w-1.5 rounded-full bg-teal" />
+                  </div>
+                  <span className="text-sm text-foreground/80">{bullet}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="text-xs italic text-slate-500">
+              Takes 4 minutes. No account required. Results generated instantly.
+            </p>
+          </div>
+        </section>
+
+        {/* Assessment tool */}
+        <section className="border-t border-border px-6 pb-24 lg:px-8 lg:pb-28">
+          <div className="mx-auto max-w-6xl pt-12">
+            <ExposureRiskAssessment />
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
+  );
+}

@@ -58,7 +58,7 @@ export default function TemplatesPreview() {
                 key={layer.name}
                 className="relative flex flex-col gap-3 pb-8 last:pb-0 sm:flex-row sm:gap-7"
               >
-                <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-teal/25 bg-white text-[10px] font-mono font-semibold text-teal/60">
+                <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-teal/25 bg-[#F5F0E8] text-[10px] font-mono font-semibold text-teal/60">
                   {String(i + 1).padStart(2, "0")}
                 </div>
 

@@ -17,7 +17,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
 import WorkshopInquiryForm from "@/components/marketing/workshop-inquiry-form";
 
 const problems = [
@@ -226,7 +225,7 @@ export default function WorkshopPage() {
           <div className="mx-auto max-w-6xl">
             <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-12">
               <div className="flex flex-col justify-center">
-                <span className="mb-6 inline-flex w-fit items-center rounded-full border border-teal/20 bg-teal/5 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">
+                <span className="mb-6 inline-flex w-fit items-center rounded-full border border-teal/20 bg-[#9A7A3A]/5 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">
                   Executive Workshop
                 </span>
                 <h1 className="mb-5 text-4xl font-bold leading-[1.06] tracking-[-0.02em] text-foreground sm:text-5xl lg:text-6xl">
@@ -240,7 +239,7 @@ export default function WorkshopPage() {
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <Button
                     asChild
-                    className="h-10 rounded-md bg-teal px-6 text-[13px] font-semibold tracking-[0.01em] text-teal-foreground hover:bg-teal/88"
+                    className="h-10 rounded-md bg-[#9A7A3A] px-6 text-[13px] font-semibold tracking-[0.01em] text-[#F5F0E8] hover:bg-[#9A7A3A]/88"
                   >
                     <a href="#executive-session">
                       Request Executive Session
@@ -265,7 +264,7 @@ export default function WorkshopPage() {
                   "Financial accountability layer connecting AI to capital decisions",
                 ].map((point) => (
                   <div key={point} className="flex items-center gap-3">
-                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-teal/25 bg-teal/5">
+                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-teal/25 bg-[#9A7A3A]/5">
                       <CheckCircle2 className="size-3 text-teal" />
                     </div>
                     <span className="text-sm text-foreground/80">{point}</span>
@@ -295,7 +294,7 @@ export default function WorkshopPage() {
                   className="rounded-md border border-border bg-white p-6 shadow-sm"
                 >
                   <div className="mb-3 flex items-center gap-2">
-                    <div className="h-1.5 w-1.5 rounded-full bg-teal" />
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#9A7A3A]" />
                     <p className="text-sm font-semibold text-foreground">
                       {problem.title}
                     </p>
@@ -365,7 +364,7 @@ export default function WorkshopPage() {
               {/* Day 1 */}
               <div>
                 <div className="mb-6">
-                  <span className="inline-flex items-center rounded-full border border-teal/20 bg-teal/5 px-3 py-1 text-[11px] font-semibold tracking-[0.15em] text-teal uppercase">
+                  <span className="inline-flex items-center rounded-full border border-teal/20 bg-[#9A7A3A]/5 px-3 py-1 text-[11px] font-semibold tracking-[0.15em] text-teal uppercase">
                     Day 1 — Organizational Operating Model
                   </span>
                 </div>
@@ -375,7 +374,7 @@ export default function WorkshopPage() {
                       key={i}
                       className="flex gap-4 rounded-md border border-border bg-white p-5 shadow-sm"
                     >
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm border border-teal/20 bg-teal/5 text-[10px] font-bold tracking-wider text-teal uppercase">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm border border-teal/20 bg-[#9A7A3A]/5 text-[10px] font-bold tracking-wider text-teal uppercase">
                         {session.time}
                       </div>
                       <div>
@@ -394,7 +393,7 @@ export default function WorkshopPage() {
               {/* Day 2 */}
               <div>
                 <div className="mb-6">
-                  <span className="inline-flex items-center rounded-full border border-teal/20 bg-teal/5 px-3 py-1 text-[11px] font-semibold tracking-[0.15em] text-teal uppercase">
+                  <span className="inline-flex items-center rounded-full border border-teal/20 bg-[#9A7A3A]/5 px-3 py-1 text-[11px] font-semibold tracking-[0.15em] text-teal uppercase">
                     Day 2 — Execution + Financial Governance
                   </span>
                 </div>
@@ -404,7 +403,7 @@ export default function WorkshopPage() {
                       key={i}
                       className="flex gap-4 rounded-md border border-border bg-white p-5 shadow-sm"
                     >
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm border border-teal/20 bg-teal/5 text-[10px] font-bold tracking-wider text-teal uppercase">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm border border-teal/20 bg-[#9A7A3A]/5 text-[10px] font-bold tracking-wider text-teal uppercase">
                         {session.time}
                       </div>
                       <div>
@@ -444,7 +443,7 @@ export default function WorkshopPage() {
                     className="flex flex-col gap-4 rounded-md border border-border bg-white p-6 shadow-sm"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-teal/20 bg-teal/5">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-teal/20 bg-[#9A7A3A]/5">
                         <Icon className="size-4 text-teal" />
                       </div>
                       <h3 className="text-sm font-semibold text-foreground">
@@ -481,7 +480,7 @@ export default function WorkshopPage() {
                     key={artifact.title}
                     className="flex flex-col gap-4 rounded-md border border-border bg-white p-6 shadow-sm"
                   >
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-teal/20 bg-teal/5">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-teal/20 bg-[#9A7A3A]/5">
                       <Icon className="size-4 text-teal" />
                     </div>
                     <div>
@@ -527,8 +526,8 @@ export default function WorkshopPage() {
                     "Includes all six TLC operating artifacts",
                   ].map((point) => (
                     <li key={point} className="flex items-center gap-3">
-                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-teal/25 bg-teal/5">
-                        <div className="h-1.5 w-1.5 rounded-full bg-teal" />
+                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-teal/25 bg-[#9A7A3A]/5">
+                        <div className="h-1.5 w-1.5 rounded-full bg-[#9A7A3A]" />
                       </div>
                       <span className="text-sm text-foreground/80">{point}</span>
                     </li>
@@ -569,7 +568,7 @@ export default function WorkshopPage() {
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button
                 asChild
-                className="h-10 rounded-md bg-teal px-6 text-[13px] font-semibold tracking-[0.01em] text-teal-foreground hover:bg-teal/88"
+                className="h-10 rounded-md bg-[#9A7A3A] px-6 text-[13px] font-semibold tracking-[0.01em] text-[#F5F0E8] hover:bg-[#9A7A3A]/88"
               >
                 <a href="#executive-session">Request Executive Session</a>
               </Button>
@@ -585,7 +584,7 @@ export default function WorkshopPage() {
         </section>
 
       </main>
-      <Footer />
+      
     </>
   );
 }

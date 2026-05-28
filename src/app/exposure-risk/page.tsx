@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Header from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
 import ExposureRiskAssessment from "@/components/marketing/exposure-risk-assessment";
 
 export const metadata: Metadata = {
@@ -25,7 +24,7 @@ export default function ExposureRiskPage() {
         {/* Hero */}
         <section className="px-6 py-20 lg:px-8 lg:py-24">
           <div className="mx-auto max-w-6xl">
-            <span className="mb-6 inline-flex items-center rounded-full border border-teal/20 bg-teal/5 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">
+            <span className="mb-6 inline-flex items-center rounded-full border border-teal/20 bg-[#9A7A3A]/5 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">
               Exposure Risk
             </span>
             <h1 className="mb-4 max-w-3xl text-4xl font-bold leading-[1.06] tracking-[-0.02em] text-foreground sm:text-5xl">
@@ -42,8 +41,8 @@ export default function ExposureRiskPage() {
             <ul className="mb-6 flex flex-col gap-2.5">
               {heroBullets.map((bullet) => (
                 <li key={bullet} className="flex items-center gap-3">
-                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-teal/25 bg-teal/5">
-                    <div className="h-1.5 w-1.5 rounded-full bg-teal" />
+                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-teal/25 bg-[#9A7A3A]/5">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#9A7A3A]" />
                   </div>
                   <span className="text-sm text-foreground/80">{bullet}</span>
                 </li>
@@ -62,7 +61,7 @@ export default function ExposureRiskPage() {
           </div>
         </section>
       </main>
-      <Footer />
+      
     </>
   );
 }

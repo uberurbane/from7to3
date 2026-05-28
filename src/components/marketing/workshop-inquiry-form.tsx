@@ -45,7 +45,7 @@ export default function WorkshopInquiryForm() {
   if (submitted) {
     return (
       <div className="flex flex-col items-center justify-center gap-5 rounded-md border border-teal/20 bg-teal/5 px-8 py-16 text-center">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full border border-teal/25 bg-white shadow-sm">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full border border-teal/25 bg-[#F5F0E8] shadow-sm">
           <CheckCircle2 className="size-5 text-teal" />
         </div>
         <div>

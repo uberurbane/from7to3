@@ -20,7 +20,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
 
 const problemCards = [
   {
@@ -199,7 +198,7 @@ export default function SystemPage() {
         {/* Hero */}
         <section className="px-6 py-24 lg:px-8 lg:py-32">
           <div className="mx-auto max-w-4xl text-center">
-            <span className="mb-6 inline-flex items-center rounded-full border border-teal/20 bg-teal/5 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">
+            <span className="mb-6 inline-flex items-center rounded-full border border-teal/20 bg-[#9A7A3A]/5 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">
               The TLC Operating Model
             </span>
             <h1 className="mb-6 text-4xl font-bold leading-[1.06] tracking-[-0.02em] text-foreground sm:text-5xl lg:text-6xl">
@@ -215,7 +214,7 @@ export default function SystemPage() {
             <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button
                 asChild
-                className="h-10 rounded-md bg-teal px-6 text-[13px] font-semibold tracking-[0.01em] text-teal-foreground hover:bg-teal/88"
+                className="h-10 rounded-md bg-[#9A7A3A] px-6 text-[13px] font-semibold tracking-[0.01em] text-[#F5F0E8] hover:bg-[#9A7A3A]/88"
               >
                 <Link href="/templates">
                   Download the TLC Starter Kit
@@ -297,7 +296,7 @@ export default function SystemPage() {
 
             <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
               <div className="relative">
-                <div className="absolute left-5 top-2 bottom-2 w-px bg-teal/15" />
+                <div className="absolute left-5 top-2 bottom-2 w-px bg-[#9A7A3A]/15" />
                 <div className="flex flex-col gap-0">
                   {loopLayers.map((layer) => {
                     const Icon = layer.icon;
@@ -429,7 +428,7 @@ export default function SystemPage() {
                     className="rounded-md border border-border bg-white p-5 shadow-sm"
                   >
                     <div className="mb-2 flex items-center gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-teal" />
+                      <div className="h-1.5 w-1.5 rounded-full bg-[#9A7A3A]" />
                       <p className="text-sm font-semibold text-foreground">
                         {signal.name}
                       </p>
@@ -465,7 +464,7 @@ export default function SystemPage() {
                     className="flex flex-col gap-4 rounded-md border border-border bg-white p-6 shadow-sm"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-teal/20 bg-teal/5">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-teal/20 bg-[#9A7A3A]/5">
                         <Icon className="size-4 text-teal" />
                       </div>
                       <h3 className="text-sm font-semibold text-foreground">
@@ -505,7 +504,7 @@ export default function SystemPage() {
         </section>
 
       </main>
-      <Footer />
+      
     </>
   );
 }

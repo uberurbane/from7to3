@@ -1,4 +1,3 @@
-import Header from "@/components/layout/header";
 export default function BookPage() {
   const inside = [
     "Three-Layer Organization",
@@ -18,12 +17,11 @@ export default function BookPage() {
 
   return (
   <>
-    <Header />
-    <main className="min-h-screen bg-[#fbfcfd] text-slate-950">
-      <section className="border-t border-slate-200">
+    <main className="min-h-screen bg-[#F5F0E8] text-slate-950">
+      <section className="border-t border-[#DDD8CE]">
         <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 px-6 py-24 md:grid-cols-[1.05fr_0.95fr] lg:px-8">
           <div>
-            <div className="mb-8 inline-flex rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.28em] text-teal-600">
+            <div className="mb-8 inline-flex rounded-full border border-teal-200 bg-[#9A7A3A]-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.28em] text-teal-600">
               The Authority Layer
             </div>
 
@@ -40,10 +38,10 @@ export default function BookPage() {
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
-              <a href="/templates#lead-capture" className="rounded-lg bg-teal-600 px-7 py-4 text-base font-bold text-white shadow-sm hover:bg-teal-700">
+              <a href="/templates#lead-capture" className="rounded-lg bg-[#9A7A3A] px-7 py-4 text-base font-bold text-[#F5F0E8] shadow-sm hover:bg-[#7A5E28]">
                 Get the Executive Brief →
               </a>
-              <a href="/system" className="rounded-lg border border-slate-200 bg-white px-7 py-4 text-base font-bold text-slate-700 shadow-sm hover:bg-slate-50">
+              <a href="/system" className="rounded-lg border border-[#DDD8CE] bg-[#F5F0E8] px-7 py-4 text-base font-bold text-slate-700 shadow-sm hover:bg-[#F5F0E8]">
                 Explore the TLC System
               </a>
             </div>
@@ -55,14 +53,14 @@ export default function BookPage() {
               <img
                 src="/book/Front_cover.jpg"
                 alt="From 7 to 3 book cover"
-                className="relative w-[360px] rounded-3xl border border-slate-200 bg-white shadow-2xl md:w-[420px]"
+                className="relative w-[360px] rounded-3xl border border-[#DDD8CE] bg-[#F5F0E8] shadow-2xl md:w-[420px]"
               />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="border-y border-slate-200 bg-white">
+      <section className="border-y border-[#DDD8CE] bg-[#F5F0E8]">
         <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
           <div className="max-w-3xl">
             <div className="mb-5 text-xs font-bold uppercase tracking-[0.28em] text-teal-600">
@@ -90,8 +88,8 @@ export default function BookPage() {
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           {inside.map((item) => (
-            <div key={item} className="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
-              <div className="mb-5 h-2 w-12 rounded-full bg-teal-500" />
+            <div key={item} className="rounded-2xl border border-[#DDD8CE] bg-[#F5F0E8] p-7 shadow-sm">
+              <div className="mb-5 h-2 w-12 rounded-full bg-[#9A7A3A]-500" />
               <h3 className="text-xl font-extrabold text-slate-950">{item}</h3>
               <p className="mt-4 text-base leading-7 text-slate-600">
                 A practical governance concept for making AI execution measurable, accountable, and financially legible.
@@ -101,7 +99,7 @@ export default function BookPage() {
         </div>
       </section>
 
-      <section className="border-y border-slate-200 bg-white">
+      <section className="border-y border-[#DDD8CE] bg-[#F5F0E8]">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-20 md:grid-cols-2 lg:px-8">
           <div>
             <div className="mb-4 text-xs font-bold uppercase tracking-[0.28em] text-teal-600">
@@ -114,8 +112,8 @@ export default function BookPage() {
 
           <div className="space-y-5">
             {audience.map((item) => (
-              <div key={item} className="flex gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5">
-                <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-teal-300 bg-teal-50 text-xs font-black text-teal-600">
+              <div key={item} className="flex gap-4 rounded-2xl border border-[#DDD8CE] bg-[#F5F0E8] p-5">
+                <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-teal-300 bg-[#9A7A3A]-50 text-xs font-black text-teal-600">
                   •
                 </span>
                 <p className="text-lg leading-8 text-slate-700">{item}</p>
@@ -126,7 +124,7 @@ export default function BookPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-        <div className="rounded-3xl border border-slate-200 bg-slate-950 p-10 text-white md:p-14">
+        <div className="rounded-3xl border border-[#DDD8CE] bg-slate-950 p-10 text-[#F5F0E8] md:p-14">
           <div className="mb-4 text-xs font-bold uppercase tracking-[0.28em] text-teal-300">
             Executive preview
           </div>
@@ -138,7 +136,7 @@ export default function BookPage() {
           </p>
           <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
             {["Direction", "Control", "Execution"].map((item) => (
-              <div key={item} className="rounded-2xl border border-white/10 bg-white/5 p-6">
+              <div key={item} className="rounded-2xl border border-white/10 bg-[#F5F0E8]/5 p-6">
                 <h3 className="text-2xl font-black">{item}</h3>
                 <p className="mt-3 text-sm leading-6 text-slate-300">
                   One layer of the three-layer AI-native operating model.

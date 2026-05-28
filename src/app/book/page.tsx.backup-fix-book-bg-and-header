@@ -1,0 +1,154 @@
+import Header from "@/components/layout/header";
+export default function BookPage() {
+  const inside = [
+    "Three-Layer Organization",
+    "Coordination Debt™",
+    "Token Velocity™",
+    "Tokenomics P&L",
+    "Enterprise Decision Stack",
+    "AI Governance Operating Model",
+  ];
+
+  const audience = [
+    "CIOs and CTOs governing enterprise AI execution",
+    "AI leaders moving beyond pilots and experiments",
+    "Transformation executives accountable for measurable results",
+    "AI Product Managers building governed execution systems",
+  ];
+
+  return (
+  <>
+    <Header />
+    <main className="min-h-screen bg-[#fbfcfd] text-slate-950">
+      <section className="border-t border-[#DDD8CE]">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 px-6 py-24 md:grid-cols-[1.05fr_0.95fr] lg:px-8">
+          <div>
+            <div className="mb-8 inline-flex rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.28em] text-teal-600">
+              The Authority Layer
+            </div>
+
+            <h1 className="max-w-3xl text-6xl font-black leading-[0.95] tracking-tight text-slate-950 md:text-7xl">
+              From 7 to 3
+            </h1>
+
+            <p className="mt-8 max-w-2xl text-2xl leading-10 text-slate-600">
+              The strategic foundation for Token Learning Control — built for executives who need to move from AI experimentation to AI accountability without losing organizational coherence.
+            </p>
+
+            <p className="mt-8 max-w-2xl text-lg leading-9 text-slate-500">
+              This is not a how-to guide for AI tools. It is an operating model for organizations that have already deployed AI and now need to govern what they have built.
+            </p>
+
+            <div className="mt-10 flex flex-wrap gap-4">
+              <a href="/templates#lead-capture" className="rounded-lg bg-teal-600 px-7 py-4 text-base font-bold text-white shadow-sm hover:bg-teal-700">
+                Get the Executive Brief →
+              </a>
+              <a href="/system" className="rounded-lg border border-[#DDD8CE] bg-[#F5F0E8] px-7 py-4 text-base font-bold text-slate-700 shadow-sm hover:bg-[#F5F0E8]">
+                Explore the TLC System
+              </a>
+            </div>
+          </div>
+
+          <div className="flex justify-center md:justify-end">
+            <div className="relative">
+              <div className="absolute inset-0 translate-x-8 translate-y-8 rounded-3xl bg-slate-200 blur-2xl" />
+              <img
+                src="/book/Front_cover.jpg"
+                alt="From 7 to 3 book cover"
+                className="relative w-[360px] rounded-3xl border border-[#DDD8CE] bg-[#F5F0E8] shadow-2xl md:w-[420px]"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-[#DDD8CE] bg-[#F5F0E8]">
+        <div className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+          <div className="max-w-3xl">
+            <div className="mb-5 text-xs font-bold uppercase tracking-[0.28em] text-teal-600">
+              Why this book exists
+            </div>
+            <h2 className="text-4xl font-black tracking-tight text-slate-950 md:text-5xl">
+              AI does not remove coordination. It exposes whether coordination was governed.
+            </h2>
+            <p className="mt-6 text-xl leading-9 text-slate-600">
+              From 7 to 3 explains why traditional seven-layer execution models break under AI, and why governed AI execution requires a simpler operating model: Direction, Control, and Execution.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+        <div className="mb-10">
+          <div className="mb-4 text-xs font-bold uppercase tracking-[0.28em] text-teal-600">
+            Inside the book
+          </div>
+          <h2 className="text-4xl font-black tracking-tight text-slate-950">
+            The core operating concepts.
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {inside.map((item) => (
+            <div key={item} className="rounded-2xl border border-[#DDD8CE] bg-[#F5F0E8] p-7 shadow-sm">
+              <div className="mb-5 h-2 w-12 rounded-full bg-teal-500" />
+              <h3 className="text-xl font-extrabold text-slate-950">{item}</h3>
+              <p className="mt-4 text-base leading-7 text-slate-600">
+                A practical governance concept for making AI execution measurable, accountable, and financially legible.
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-y border-[#DDD8CE] bg-[#F5F0E8]">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-20 md:grid-cols-2 lg:px-8">
+          <div>
+            <div className="mb-4 text-xs font-bold uppercase tracking-[0.28em] text-teal-600">
+              Who it is for
+            </div>
+            <h2 className="text-4xl font-black tracking-tight text-slate-950">
+              Built for leaders accountable for AI execution.
+            </h2>
+          </div>
+
+          <div className="space-y-5">
+            {audience.map((item) => (
+              <div key={item} className="flex gap-4 rounded-2xl border border-[#DDD8CE] bg-[#F5F0E8] p-5">
+                <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-teal-300 bg-teal-50 text-xs font-black text-teal-600">
+                  •
+                </span>
+                <p className="text-lg leading-8 text-slate-700">{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+        <div className="rounded-3xl border border-[#DDD8CE] bg-slate-950 p-10 text-white md:p-14">
+          <div className="mb-4 text-xs font-bold uppercase tracking-[0.28em] text-teal-300">
+            Executive preview
+          </div>
+          <h2 className="max-w-4xl text-4xl font-black tracking-tight md:text-5xl">
+            The book introduces the operating logic behind Token Learning Control.
+          </h2>
+          <p className="mt-6 max-w-3xl text-xl leading-9 text-slate-300">
+            Direction sets constraints. Control governs decision systems. Execution assembles, validates, and improves AI-enabled work.
+          </p>
+          <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
+            {["Direction", "Control", "Execution"].map((item) => (
+              <div key={item} className="rounded-2xl border border-white/10 bg-[#F5F0E8]/5 p-6">
+                <h3 className="text-2xl font-black">{item}</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-300">
+                  One layer of the three-layer AI-native operating model.
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+  </>
+  );
+}

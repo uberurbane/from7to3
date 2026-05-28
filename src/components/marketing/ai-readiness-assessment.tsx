@@ -36,7 +36,7 @@ function ControlBar({
   onTargetChange,
 }: ControlBarProps) {
   return (
-    <div className="mb-6 rounded-lg border border-slate-200 bg-slate-50 p-4">
+    <div className="mb-6 rounded-lg border border-slate-200 bg-[#F5F0E8] p-4">
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
         <div>
           <label className="mb-2 block text-xs font-medium uppercase tracking-widest text-slate-500">
@@ -45,7 +45,7 @@ function ControlBar({
           <select
             value={companySize}
             onChange={(e) => onSizeChange(e.target.value as SizeKey)}
-            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+            className="w-full rounded-md border border-slate-300 bg-[#F5F0E8] px-3 py-2 text-sm text-slate-900 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
           >
             {(Object.entries(COMPANY_SIZES) as [SizeKey, string][]).map(
               ([k, v]) => (
@@ -137,21 +137,21 @@ function FrameworkTab({
 
       {/* Metric strip */}
       <div className="mb-6 grid grid-cols-3 gap-4">
-        <div className="rounded-lg border border-slate-200 bg-white p-4">
+        <div className="rounded-lg border border-slate-200 bg-[#F5F0E8] p-4">
           <p className="mb-1 text-xs font-medium uppercase tracking-widest text-slate-500">
             Current state
           </p>
           <p className="text-3xl font-bold text-teal-600">{currentLevel}%</p>
           <p className="mt-1 text-sm text-slate-600">{currentDescriptor?.name}</p>
         </div>
-        <div className="rounded-lg border border-slate-200 bg-white p-4">
+        <div className="rounded-lg border border-slate-200 bg-[#F5F0E8] p-4">
           <p className="mb-1 text-xs font-medium uppercase tracking-widest text-slate-500">
             Target state
           </p>
           <p className="text-3xl font-bold text-slate-900">{targetLevel}%</p>
           <p className="mt-1 text-sm text-slate-600">{targetDescriptor?.name}</p>
         </div>
-        <div className="rounded-lg border border-slate-200 bg-white p-4">
+        <div className="rounded-lg border border-slate-200 bg-[#F5F0E8] p-4">
           <p className="mb-1 text-xs font-medium uppercase tracking-widest text-slate-500">
             Gap to close
           </p>
@@ -162,7 +162,7 @@ function FrameworkTab({
 
       {/* As-is / To-be cards */}
       <div className="mb-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <div className="rounded-lg border border-slate-200 bg-white p-5">
+        <div className="rounded-lg border border-slate-200 bg-[#F5F0E8] p-5">
           <p className="text-3xl font-bold text-teal-600">{currentLevel}%</p>
           <h3 className="mb-1 text-base font-semibold text-slate-900">
             {currentDescriptor?.name}
@@ -188,7 +188,7 @@ function FrameworkTab({
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-200 bg-white p-5">
+        <div className="rounded-lg border border-slate-200 bg-[#F5F0E8] p-5">
           <p className="text-3xl font-bold text-slate-900">{targetLevel}%</p>
           <h3 className="mb-1 text-base font-semibold text-slate-900">
             {targetDescriptor?.name}
@@ -216,7 +216,7 @@ function FrameworkTab({
       </div>
 
       {/* Gap analysis */}
-      <div className="rounded-lg border border-slate-200 bg-white p-5">
+      <div className="rounded-lg border border-slate-200 bg-[#F5F0E8] p-5">
         <h3 className="mb-4 font-semibold text-slate-900">Gap analysis</h3>
         <div className="flex flex-col">
           {DIMENSIONS.map((dim) => {
@@ -285,7 +285,7 @@ function DiagnosticTab(props: ControlBarProps) {
       />
 
       {/* Who to interview */}
-      <div className="mb-6 rounded-r-lg border-l-4 border-teal-500 bg-slate-50 p-4">
+      <div className="mb-6 rounded-r-lg border-l-4 border-teal-500 bg-[#F5F0E8] p-4">
         <p className="mb-2 text-xs font-medium uppercase tracking-widest text-slate-500">
           Who to interview
         </p>
@@ -296,7 +296,7 @@ function DiagnosticTab(props: ControlBarProps) {
       {DIMENSIONS.map((dim) => (
         <div
           key={dim}
-          className="mb-4 overflow-hidden rounded-lg border border-slate-200 bg-white"
+          className="mb-4 overflow-hidden rounded-lg border border-slate-200 bg-[#F5F0E8]"
         >
           <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
             <h3 className="font-semibold text-slate-900">
@@ -327,7 +327,7 @@ function DiagnosticTab(props: ControlBarProps) {
       ))}
 
       {/* Observation checklist */}
-      <div className="rounded-lg border border-slate-200 bg-slate-50 p-5">
+      <div className="rounded-lg border border-slate-200 bg-[#F5F0E8] p-5">
         <h3 className="mb-4 font-semibold text-slate-900">
           What to observe without asking
         </h3>
@@ -418,7 +418,7 @@ function PlannerTab(props: ControlBarProps) {
       />
 
       {/* Context callout */}
-      <div className="mb-6 rounded-r-lg border-l-4 border-teal-500 bg-slate-50 p-4">
+      <div className="mb-6 rounded-r-lg border-l-4 border-teal-500 bg-[#F5F0E8] p-4">
         <p className="text-sm text-slate-700">
           Moving from{" "}
           <span className="font-semibold text-slate-900">
@@ -447,7 +447,7 @@ function PlannerTab(props: ControlBarProps) {
         return (
           <div
             key={i}
-            className={`mb-4 rounded-lg border border-slate-200 bg-white p-5 pl-4 ${style.borderCls}`}
+            className={`mb-4 rounded-lg border border-slate-200 bg-[#F5F0E8] p-5 pl-4 ${style.borderCls}`}
           >
             <p
               className={`mb-2 text-xs font-medium uppercase tracking-widest ${style.labelCls}`}
@@ -473,7 +473,7 @@ function PlannerTab(props: ControlBarProps) {
       })}
 
       {/* Milestone table */}
-      <div className="rounded-lg border border-slate-200 bg-white p-5">
+      <div className="rounded-lg border border-slate-200 bg-[#F5F0E8] p-5">
         <h3 className="mb-4 font-semibold text-slate-900">
           Success criteria by milestone
         </h3>
@@ -530,7 +530,7 @@ export default function AIReadinessAssessment() {
   return (
     <div>
       {/* Tab bar */}
-      <div className="mb-6 flex overflow-x-auto border-b border-slate-200 bg-white">
+      <div className="mb-6 flex overflow-x-auto border-b border-slate-200 bg-[#F5F0E8]">
         {TABS.map((tab) => (
           <button
             key={tab.id}

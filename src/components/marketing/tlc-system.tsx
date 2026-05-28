@@ -30,7 +30,7 @@ export default function TLCSystem() {
           </div>
 
           <div className="flex flex-col justify-center">
-            <div className="rounded-md border border-border bg-white p-8 shadow-sm">
+            <div className="rounded-md border border-border bg-[#F5F0E8] p-8 shadow-sm">
               <div className="mb-8 flex items-center justify-center gap-6">
                 <span className="text-6xl font-bold tracking-[-0.04em] text-foreground lg:text-7xl">
                   7
@@ -56,7 +56,7 @@ export default function TLCSystem() {
                 <div className="flex flex-col gap-0">
                   {flowSteps.map((step, i) => (
                     <div key={step.label} className="relative flex items-start gap-4 pb-6 last:pb-0">
-                      <div className="relative z-10 mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-teal/25 bg-white text-[10px] font-semibold text-teal/70">
+                      <div className="relative z-10 mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-teal/25 bg-[#F5F0E8] text-[10px] font-semibold text-teal/70">
                         {String(i + 1).padStart(2, "0")}
                       </div>
                       <div className="pt-1">

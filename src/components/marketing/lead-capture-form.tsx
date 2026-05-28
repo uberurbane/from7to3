@@ -19,7 +19,7 @@ export default function LeadCaptureForm() {
   }, []);
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl justify-center rounded-2xl border border-slate-200 bg-white p-8 shadow-sm md:p-10">
+    <div className="mx-auto flex w-full max-w-3xl justify-center rounded-2xl border border-slate-200 bg-[#F5F0E8] p-8 shadow-sm md:p-10">
       <div ref={formRef} className="w-full max-w-2xl" />
     </div>
   );

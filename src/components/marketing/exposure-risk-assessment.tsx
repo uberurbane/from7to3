@@ -25,7 +25,7 @@ const OPTION_SELECTED: Record<RiskLevel, string> = {
 };
 
 const OPTION_DEFAULT =
-  "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50";
+  "border border-slate-200 bg-[#F5F0E8] text-slate-600 hover:border-slate-300 hover:bg-[#F5F0E8]";
 
 const TIER_PROGRESS_BAR: Record<RiskTier, string> = {
   low: "bg-teal-500",
@@ -102,7 +102,7 @@ function ProgressBar({
   onNavigate,
 }: ProgressBarProps) {
   return (
-    <div className="mb-6 flex overflow-x-auto border-b border-slate-200 bg-white">
+    <div className="mb-6 flex overflow-x-auto border-b border-slate-200 bg-[#F5F0E8]">
       {STEP_LABELS.map((label, i) => {
         const isActive = currentSection === i;
         const isCompleted = i <= maxReached && i !== currentSection;
@@ -178,7 +178,7 @@ function SectionView({
         return (
           <div
             key={question.id}
-            className="mb-3 rounded-lg border border-slate-200 bg-white p-5"
+            className="mb-3 rounded-lg border border-slate-200 bg-[#F5F0E8] p-5"
           >
             <p className="text-sm font-medium leading-relaxed text-slate-900">
               {question.text}
@@ -216,7 +216,7 @@ function SectionView({
           {sectionIndex > 0 && (
             <button
               onClick={onBack}
-              className="rounded-md border border-slate-200 px-4 py-2 text-sm text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+              className="rounded-md border border-slate-200 px-4 py-2 text-sm text-slate-600 hover:border-slate-300 hover:bg-[#F5F0E8]"
             >
               ← Back
             </button>
@@ -533,7 +533,7 @@ ${findingsHtml}
       </div>
 
       {/* Risk breakdown */}
-      <div className="mb-5 rounded-lg border border-slate-200 bg-white p-5">
+      <div className="mb-5 rounded-lg border border-slate-200 bg-[#F5F0E8] p-5">
         <h3 className="mb-4 font-semibold text-slate-900">Risk breakdown by vector</h3>
         <div className="flex flex-col gap-3">
           {SECTIONS.map((section) => {
@@ -585,13 +585,13 @@ ${findingsHtml}
 
       {/* Key findings */}
       {findings.length > 0 && (
-        <div className="mb-5 rounded-lg border border-slate-200 bg-white p-5">
+        <div className="mb-5 rounded-lg border border-slate-200 bg-[#F5F0E8] p-5">
           <h3 className="mb-4 font-semibold text-slate-900">Key findings</h3>
           <div className="flex flex-col gap-3">
             {findings.map((finding, i) => (
               <div
                 key={i}
-                className={`rounded-r-md border-l-[3px] py-3 pl-4 pr-3 ${FINDING_BORDER[finding.tier]} bg-slate-50`}
+                className={`rounded-r-md border-l-[3px] py-3 pl-4 pr-3 ${FINDING_BORDER[finding.tier]} bg-[#F5F0E8]`}
               >
                 <p className="mb-1 text-sm font-medium text-slate-900">{finding.title}</p>
                 <p className="text-sm text-slate-600">{finding.body}</p>
@@ -603,7 +603,7 @@ ${findingsHtml}
 
       {/* What this typically leads to */}
       {leadsToItems.length > 0 && (
-        <div className="mb-5 rounded-lg border border-slate-200 bg-white p-5">
+        <div className="mb-5 rounded-lg border border-slate-200 bg-[#F5F0E8] p-5">
           <h3 className="mb-1 font-semibold text-slate-900">What this typically leads to</h3>
           <p className="mb-4 text-xs text-slate-400">
             Without a structured governance response, organisations at this profile commonly experience the following within 12–18 months.
@@ -621,7 +621,7 @@ ${findingsHtml}
 
       {/* Operational consequences */}
       {consequences.length > 0 && (
-        <div className="mb-5 rounded-lg border border-slate-200 bg-white p-5">
+        <div className="mb-5 rounded-lg border border-slate-200 bg-[#F5F0E8] p-5">
           <h3 className="mb-4 font-semibold text-slate-900">Likely operational consequences</h3>
           <div className="flex flex-col gap-3">
             {consequences.map((row, i) => (
@@ -640,7 +640,7 @@ ${findingsHtml}
       )}
 
       {/* Peer positioning */}
-      <div className="mb-5 rounded-lg border border-slate-200 bg-white p-5">
+      <div className="mb-5 rounded-lg border border-slate-200 bg-[#F5F0E8] p-5">
         <h3 className="mb-4 font-semibold text-slate-900">Peer positioning</h3>
         <div className="relative mb-2 mt-8">
           <div
@@ -670,7 +670,7 @@ ${findingsHtml}
       </div>
 
       {/* Business impact grid */}
-      <div className="mb-5 rounded-lg border border-slate-200 bg-white p-5">
+      <div className="mb-5 rounded-lg border border-slate-200 bg-[#F5F0E8] p-5">
         <h3 className="mb-4 font-semibold text-slate-900">Estimated business impact</h3>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {impactCells.map((cell) => (
@@ -690,7 +690,7 @@ ${findingsHtml}
       </div>
 
       {/* Recommended immediate priority */}
-      <div className="mb-5 rounded-r-lg border-l-4 border-teal bg-slate-50 p-5">
+      <div className="mb-5 rounded-r-lg border-l-4 border-teal bg-[#F5F0E8] p-5">
         <p className="mb-2 text-xs font-medium uppercase tracking-widest text-slate-500">
           Recommended immediate priority
         </p>
@@ -702,19 +702,19 @@ ${findingsHtml}
       <div className="flex flex-wrap items-center justify-center gap-3">
         <button
           onClick={onRetake}
-          className="rounded-md border border-slate-200 px-6 py-2.5 text-sm font-medium text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+          className="rounded-md border border-slate-200 px-6 py-2.5 text-sm font-medium text-slate-600 hover:border-slate-300 hover:bg-[#F5F0E8]"
         >
           ← Retake assessment
         </button>
         <button
           onClick={handleCopy}
-          className="rounded-md border border-slate-300 px-6 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
+          className="rounded-md border border-slate-300 px-6 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-[#F5F0E8]"
         >
           {copied ? "Copied ✓" : "Copy score summary"}
         </button>
         <button
           onClick={downloadPDF}
-          className="flex items-center gap-2 rounded-md border border-slate-200 px-6 py-2.5 text-sm font-medium text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+          className="flex items-center gap-2 rounded-md border border-slate-200 px-6 py-2.5 text-sm font-medium text-slate-600 hover:border-slate-300 hover:bg-[#F5F0E8]"
         >
           <Download className="h-3.5 w-3.5" />
           Download executive brief (PDF)

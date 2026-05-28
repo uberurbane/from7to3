@@ -1,0 +1,590 @@
+import Link from "next/link";
+import {
+  Building2,
+  Cpu,
+  RefreshCw,
+  Code2,
+  Landmark,
+  Users,
+  ArrowRight,
+  CheckCircle2,
+  FileText,
+  BarChart3,
+  Target,
+  Shield,
+  Layers,
+  TrendingUp,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Header from "@/components/layout/header";
+import WorkshopInquiryForm from "@/components/marketing/workshop-inquiry-form";
+
+const problems = [
+  {
+    title: "AI proliferates without authority",
+    description:
+      "Teams deploy AI systems without governance structures. No one owns the decision of which AI to fund, kill, or constrain — so all of them run indefinitely.",
+  },
+  {
+    title: "Spend is invisible",
+    description:
+      "Token consumption accumulates across systems, sprints, and teams with no attribution. Finance cannot see AI cost. Leaders cannot govern what they cannot measure.",
+  },
+  {
+    title: "Coordination cost erases AI gains",
+    description:
+      "Every hand-off between AI output and human review is coordination overhead. As AI systems multiply, so does the invisible tax on execution speed.",
+  },
+  {
+    title: "Governance stays abstract",
+    description:
+      "AI policies exist. Operating discipline does not. Without structured artifacts, governance remains a set of intentions — not a set of decisions.",
+  },
+];
+
+const installations = [
+  {
+    title: "Coordination Debt™ map",
+    whyItMatters:
+      "Surfaces the invisible coordination overhead that grows as AI systems multiply without governance structures.",
+    outcome: "Executive clarity on where AI execution is losing velocity.",
+  },
+  {
+    title: "AI feature inventory",
+    whyItMatters:
+      "Converts informal AI deployment into a governed portfolio — with ownership, success criteria, and kill conditions defined.",
+    outcome: "A controlled register of every AI capability in operation.",
+  },
+  {
+    title: "Token ceiling framework",
+    whyItMatters:
+      "Replaces uncapped AI spend with sprint-level allocation decisions — treating cognitive compute as a finite, governed resource.",
+    outcome: "Sprint budgets with measurable ceilings instead of unlimited burn.",
+  },
+  {
+    title: "Velocity measurement system",
+    whyItMatters:
+      "Tracks output value relative to token consumption — producing the execution efficiency signal needed for investment decisions.",
+    outcome: "A quantified view of which AI features are delivering returns.",
+  },
+  {
+    title: "Migration mandate",
+    whyItMatters:
+      "Establishes executive authority for transitioning from story points to AI-native governance metrics with defined cutover dates.",
+    outcome: "Organizational authority to enforce AI operating discipline.",
+  },
+  {
+    title: "Tokenomics P&L",
+    whyItMatters:
+      "Connects token cost, coordination cost, and business contribution into a financial accountability structure visible to finance.",
+    outcome:
+      "Feature-level economics that make AI investment decisions defensible.",
+  },
+];
+
+const day1Sessions = [
+  {
+    time: "AM",
+    title: "Coordination Debt™ Diagnostic",
+    description:
+      "Map where translation, latency, reporting, and duplication costs accumulate across your AI execution. Surface the coordination overhead growing invisibly as AI systems multiply.",
+  },
+  {
+    time: "AM",
+    title: "AI Feature Inventory",
+    description:
+      "Convert informal AI deployment into governed inventory. Define ownership, success criteria, token ceilings, and kill conditions for every AI capability in your portfolio.",
+  },
+  {
+    time: "PM",
+    title: "Operating Model Design",
+    description:
+      "Define the governance structure — who owns AI features, who approves token ceilings, who has authority to kill underperforming AI systems.",
+  },
+  {
+    time: "PM",
+    title: "Migration Mandate Drafting",
+    description:
+      "Establish executive authority for transitioning to AI-native governance metrics. Define cutover dates, required metrics, and leadership accountability.",
+  },
+];
+
+const day2Sessions = [
+  {
+    time: "AM",
+    title: "Token Capacity Planning",
+    description:
+      "Build the sprint-level allocation framework. Set token ceilings before execution begins — replacing uncapped AI spend with governed budget discipline.",
+  },
+  {
+    time: "AM",
+    title: "Token Velocity™ Dashboard",
+    description:
+      "Design the execution efficiency measurement system. Define how your organization will track value delivered relative to token consumption across sprints.",
+  },
+  {
+    time: "PM",
+    title: "Tokenomics P&L Construction",
+    description:
+      "Build the financial accountability layer. Connect token cost, coordination cost, and business contribution into a model your finance partners can govern.",
+  },
+  {
+    time: "PM",
+    title: "Operating Discipline Activation",
+    description:
+      "Review all artifacts as an integrated system. Define the cadence, ownership, and escalation paths that make AI governance operational — not aspirational.",
+  },
+];
+
+const attendees = [
+  {
+    icon: Building2,
+    role: "CIO / CTO",
+    value:
+      "Establish the governance authority and operating mandate required to transition AI from experimentation to measurable execution discipline.",
+  },
+  {
+    icon: Cpu,
+    role: "AI Product Manager",
+    value:
+      "Build the feature inventory, token ceiling framework, and velocity measurement system your portfolio requires to be governed rather than guessed.",
+  },
+  {
+    icon: RefreshCw,
+    role: "Transformation Leader",
+    value:
+      "Convert Coordination Debt™ visibility into a migration mandate with executive sponsorship, defined metrics, and enforceable cutover dates.",
+  },
+  {
+    icon: Code2,
+    role: "Engineering Leader",
+    value:
+      "Replace unlimited AI spend with sprint-level token budgets, ceiling accuracy tracking, and output-to-Token Velocity™ signals your team can act on.",
+  },
+  {
+    icon: Landmark,
+    role: "Finance Partner",
+    value:
+      "Gain the tokenomics P&L model needed to connect AI inference costs to revenue contribution — making AI spend visible and governable at the portfolio level.",
+  },
+  {
+    icon: Users,
+    role: "AI Operating Team",
+    value:
+      "Leave with all six TLC operating artifacts populated for your organization — ready to run as the governance layer across your AI portfolio.",
+  },
+];
+
+const outcomeArtifacts = [
+  {
+    icon: Target,
+    title: "Coordination Debt™ Diagnostic",
+    description:
+      "A prioritized view of where AI execution is slowed by human coordination cost — with recommended actions and severity scores.",
+  },
+  {
+    icon: FileText,
+    title: "AI Feature Ledger",
+    description:
+      "A governed inventory of every AI capability with ownership, success criteria, token ceilings, and defined kill conditions.",
+  },
+  {
+    icon: Layers,
+    title: "Token Capacity Plan",
+    description:
+      "Sprint-level token budgets with feature-level allocation decisions, ceiling accuracy tracking, and variance measurement.",
+  },
+  {
+    icon: BarChart3,
+    title: "Token Velocity™ Dashboard",
+    description:
+      "A measurable execution efficiency signal showing value delivered relative to token consumption across features and sprints.",
+  },
+  {
+    icon: Shield,
+    title: "Migration Mandate Brief",
+    description:
+      "A formal operating mandate establishing authority for AI-native governance — with metrics, cutover dates, and leadership accountability.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Tokenomics P&L Worksheet",
+    description:
+      "Feature-level and portfolio-level AI economics connecting token cost, coordination cost, and business contribution.",
+  },
+];
+
+export default function WorkshopPage() {
+  return (
+    <>
+      <Header />
+      <main className="flex-1 pt-16">
+
+        {/* Hero */}
+        <section className="px-6 py-24 lg:px-8 lg:py-28">
+          <div className="mx-auto max-w-6xl">
+            <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-12">
+              <div className="flex flex-col justify-center">
+                <span className="mb-6 inline-flex w-fit items-center rounded-full border border-teal/20 bg-teal/5 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">
+                  Executive Workshop
+                </span>
+                <h1 className="mb-5 text-4xl font-bold leading-[1.06] tracking-[-0.02em] text-foreground sm:text-5xl lg:text-6xl">
+                  Install measurable AI operating discipline.
+                </h1>
+                <p className="mb-8 text-base leading-7 text-muted-foreground">
+                  A two-day working session for executive teams ready to govern
+                  AI execution — not just experiment with it. Leave with all six
+                  TLC operating artifacts populated for your organization.
+                </p>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Button
+                    asChild
+                    className="h-10 rounded-md bg-teal px-6 text-[13px] font-semibold tracking-[0.01em] text-teal-foreground hover:bg-teal/88"
+                  >
+                    <a href="#executive-session">
+                      Request Executive Session
+                      <ArrowRight className="ml-2 size-3.5" />
+                    </a>
+                  </Button>
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="h-10 rounded-md border-border/80 px-6 text-[13px] font-medium text-muted-foreground hover:border-teal/30 hover:bg-transparent hover:text-foreground"
+                  >
+                    <Link href="/system">Explore the System</Link>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex flex-col justify-center gap-4">
+                {[
+                  "Two-day executive working session",
+                  "Six operating artifacts — populated for your organization",
+                  "Governance model designed around your AI portfolio",
+                  "Financial accountability layer connecting AI to capital decisions",
+                ].map((point) => (
+                  <div key={point} className="flex items-center gap-3">
+                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-teal/25 bg-teal/5">
+                      <CheckCircle2 className="size-3 text-teal" />
+                    </div>
+                    <span className="text-sm text-foreground/80">{point}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* The Enterprise Problem */}
+        <section className="border-t border-border px-6 py-24 lg:px-8 lg:py-28">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-14">
+              <p className="mb-4 text-xs font-semibold tracking-[0.2em] text-teal uppercase">
+                The Enterprise Problem
+              </p>
+              <h2 className="max-w-xl text-3xl font-bold leading-tight tracking-[-0.015em] text-foreground sm:text-4xl">
+                AI execution is scaling. Governance is not.
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              {problems.map((problem) => (
+                <div
+                  key={problem.title}
+                  className="rounded-md border border-border bg-white p-6 shadow-sm"
+                >
+                  <div className="mb-3 flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-teal" />
+                    <p className="text-sm font-semibold text-foreground">
+                      {problem.title}
+                    </p>
+                  </div>
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    {problem.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* What the Workshop Installs */}
+        <section className="border-t border-border px-6 py-24 lg:px-8 lg:py-28">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-14">
+              <p className="mb-4 text-xs font-semibold tracking-[0.2em] text-teal uppercase">
+                What Gets Installed
+              </p>
+              <h2 className="max-w-xl text-3xl font-bold leading-tight tracking-[-0.015em] text-foreground sm:text-4xl">
+                Six governance artifacts. One operating system.
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {installations.map((item) => (
+                <div
+                  key={item.title}
+                  className="flex flex-col gap-4 rounded-md border border-border bg-white p-6 shadow-sm"
+                >
+                  <div>
+                    <p className="mb-2 text-sm font-bold text-foreground">
+                      {item.title}
+                    </p>
+                    <p className="text-xs leading-5 text-muted-foreground">
+                      {item.whyItMatters}
+                    </p>
+                  </div>
+                  <div className="mt-auto border-t border-border pt-4">
+                    <p className="mb-1 text-[10px] font-semibold tracking-[0.15em] text-muted-foreground/50 uppercase">
+                      Executive Outcome
+                    </p>
+                    <p className="text-xs leading-5 text-foreground/70">
+                      {item.outcome}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Two-Day Workshop Structure */}
+        <section className="border-t border-border px-6 py-24 lg:px-8 lg:py-28">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-14">
+              <p className="mb-4 text-xs font-semibold tracking-[0.2em] text-teal uppercase">
+                Workshop Structure
+              </p>
+              <h2 className="max-w-xl text-3xl font-bold leading-tight tracking-[-0.015em] text-foreground sm:text-4xl">
+                Two days. Four sessions each. One integrated operating system.
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
+              {/* Day 1 */}
+              <div>
+                <div className="mb-6">
+                  <span className="inline-flex items-center rounded-full border border-teal/20 bg-teal/5 px-3 py-1 text-[11px] font-semibold tracking-[0.15em] text-teal uppercase">
+                    Day 1 — Organizational Operating Model
+                  </span>
+                </div>
+                <div className="flex flex-col gap-4">
+                  {day1Sessions.map((session, i) => (
+                    <div
+                      key={i}
+                      className="flex gap-4 rounded-md border border-border bg-white p-5 shadow-sm"
+                    >
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm border border-teal/20 bg-teal/5 text-[10px] font-bold tracking-wider text-teal uppercase">
+                        {session.time}
+                      </div>
+                      <div>
+                        <p className="mb-1 text-sm font-semibold text-foreground">
+                          {session.title}
+                        </p>
+                        <p className="text-xs leading-5 text-muted-foreground">
+                          {session.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Day 2 */}
+              <div>
+                <div className="mb-6">
+                  <span className="inline-flex items-center rounded-full border border-teal/20 bg-teal/5 px-3 py-1 text-[11px] font-semibold tracking-[0.15em] text-teal uppercase">
+                    Day 2 — Execution + Financial Governance
+                  </span>
+                </div>
+                <div className="flex flex-col gap-4">
+                  {day2Sessions.map((session, i) => (
+                    <div
+                      key={i}
+                      className="flex gap-4 rounded-md border border-border bg-white p-5 shadow-sm"
+                    >
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm border border-teal/20 bg-teal/5 text-[10px] font-bold tracking-wider text-teal uppercase">
+                        {session.time}
+                      </div>
+                      <div>
+                        <p className="mb-1 text-sm font-semibold text-foreground">
+                          {session.title}
+                        </p>
+                        <p className="text-xs leading-5 text-muted-foreground">
+                          {session.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Who Should Attend */}
+        <section className="border-t border-border px-6 py-24 lg:px-8 lg:py-28">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-14">
+              <p className="mb-4 text-xs font-semibold tracking-[0.2em] text-teal uppercase">
+                Who Should Attend
+              </p>
+              <h2 className="max-w-xl text-3xl font-bold leading-tight tracking-[-0.015em] text-foreground sm:text-4xl">
+                Built for teams with AI governance authority.
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {attendees.map((attendee) => {
+                const Icon = attendee.icon;
+                return (
+                  <div
+                    key={attendee.role}
+                    className="flex flex-col gap-4 rounded-md border border-border bg-white p-6 shadow-sm"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-teal/20 bg-teal/5">
+                        <Icon className="size-4 text-teal" />
+                      </div>
+                      <h3 className="text-sm font-semibold text-foreground">
+                        {attendee.role}
+                      </h3>
+                    </div>
+                    <p className="text-sm leading-6 text-muted-foreground">
+                      {attendee.value}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Workshop Outcomes */}
+        <section className="border-t border-border px-6 py-24 lg:px-8 lg:py-28">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-14">
+              <p className="mb-4 text-xs font-semibold tracking-[0.2em] text-teal uppercase">
+                Workshop Outcomes
+              </p>
+              <h2 className="max-w-xl text-3xl font-bold leading-tight tracking-[-0.015em] text-foreground sm:text-4xl">
+                Leave with six operating artifacts — ready to deploy.
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {outcomeArtifacts.map((artifact) => {
+                const Icon = artifact.icon;
+                return (
+                  <div
+                    key={artifact.title}
+                    className="flex flex-col gap-4 rounded-md border border-border bg-white p-6 shadow-sm"
+                  >
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-teal/20 bg-teal/5">
+                      <Icon className="size-4 text-teal" />
+                    </div>
+                    <div>
+                      <p className="mb-2 text-sm font-semibold text-foreground">
+                        {artifact.title}
+                      </p>
+                      <p className="text-xs leading-5 text-muted-foreground">
+                        {artifact.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Executive Session Request */}
+        <section
+          id="executive-session"
+          className="border-t border-border px-6 py-24 lg:px-8 lg:py-28"
+        >
+          <div className="mx-auto max-w-6xl">
+            <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-12">
+              <div className="flex flex-col justify-center">
+                <p className="mb-4 text-xs font-semibold tracking-[0.2em] text-teal uppercase">
+                  Request a Session
+                </p>
+                <h2 className="mb-5 text-3xl font-bold leading-tight tracking-[-0.015em] text-foreground sm:text-4xl">
+                  Bring AI operating discipline to your organization.
+                </h2>
+                <p className="mb-8 text-base leading-7 text-muted-foreground">
+                  The Executive Workshop is a high-engagement working session
+                  customized to your organization&apos;s AI portfolio, governance
+                  gaps, and execution challenges. Tell us about your situation
+                  and we will be in touch.
+                </p>
+                <ul className="flex flex-col gap-3">
+                  {[
+                    "Tailored to your organization's AI portfolio",
+                    "Delivered on-site or virtually",
+                    "Designed for executive and operating teams",
+                    "Includes all six TLC operating artifacts",
+                  ].map((point) => (
+                    <li key={point} className="flex items-center gap-3">
+                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-teal/25 bg-teal/5">
+                        <div className="h-1.5 w-1.5 rounded-full bg-teal" />
+                      </div>
+                      <span className="text-sm text-foreground/80">{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="flex flex-col justify-center">
+                <div className="rounded-md border border-border bg-white p-8 shadow-sm">
+                  <WorkshopInquiryForm />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Final Authority */}
+        <section className="relative overflow-hidden border-t border-border px-6 py-24 lg:px-8 lg:py-32">
+          <div
+            className="pointer-events-none absolute inset-0 -z-10"
+            style={{
+              background:
+                "radial-gradient(ellipse 60% 60% at 50% 50%, oklch(0.65 0.14 195 / 0.05) 0%, transparent 70%)",
+            }}
+          />
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="mb-4 text-xs font-semibold tracking-[0.2em] text-teal uppercase">
+              Operating Doctrine
+            </p>
+            <h2 className="mb-5 text-3xl font-bold tracking-[-0.015em] text-foreground sm:text-4xl">
+              From experimentation to operating discipline.
+            </h2>
+            <p className="mx-auto mb-10 max-w-xl text-base leading-7 text-muted-foreground">
+              The Executive Workshop converts AI governance from a set of
+              intentions into a set of operating artifacts — owned, measured,
+              and improvable across every sprint.
+            </p>
+            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <Button
+                asChild
+                className="h-10 rounded-md bg-teal px-6 text-[13px] font-semibold tracking-[0.01em] text-teal-foreground hover:bg-teal/88"
+              >
+                <a href="#executive-session">Request Executive Session</a>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="h-10 rounded-md border-border/80 px-6 text-[13px] font-medium text-muted-foreground hover:border-teal/30 hover:bg-transparent hover:text-foreground"
+              >
+                <Link href="/system">Explore the System</Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+
+      </main>
+      
+    </>
+  );
+}

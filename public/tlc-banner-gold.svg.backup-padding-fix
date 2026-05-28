@@ -1,0 +1,15 @@
+<svg width="640" height="150" viewBox="0 0 640 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="150" fill="#9A7A3A"/>
+  <text x="320" y="62" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="34" font-weight="800"
+        letter-spacing="6" fill="#FFFFFF">
+    TOKEN LEARNING CONTROL
+  </text>
+  <text x="320" y="108" text-anchor="middle"
+        font-family="Georgia, serif"
+        font-size="26" font-style="italic" font-weight="700"
+        fill="#FFFFFF">
+    Govern AI like capital.
+  </text>
+</svg>

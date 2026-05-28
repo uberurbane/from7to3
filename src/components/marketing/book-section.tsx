@@ -5,7 +5,7 @@ const amazonLink =
 
 export default function BookSection() {
   return (
-    <section className="border-t border-slate-200 bg-background py-28">
+    <section className="border-t border-slate-200 bg-[#F5F0E8] py-28 bg-[#F5F0E8]">
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 px-6 lg:grid-cols-2 lg:px-8">
         <div>
           <p className="mb-6 text-sm font-semibold uppercase tracking-[0.25em] text-teal-600">
@@ -33,7 +33,7 @@ export default function BookSection() {
               href="https://www.amazon.com/Operating-System-AI-Native-Organizations-ebook/dp/B0H1QK9KMN/ref=sr_1_1?crid=2KRQ9HXPSPJED&dib=eyJ2IjoiMSJ9.JZLNeFdMkaSQISgZ0bpg22tCHh1sLi5bsSjSio0G_kQ.8lFDzpoonry6jiZY3VaQVN_dUvJm5b5rzzlUr1zXNgg&dib_tag=se&keywords=from+7+to+3+ai&qid=1779655804&sprefix=%2Caps%2C280&sr=8-1"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center rounded-lg border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:border-slate-400 hover:bg-slate-50"
+              className="inline-flex items-center rounded-lg border border-slate-300 bg-[#F5F0E8] px-6 py-3 text-sm font-semibold text-slate-900 transition hover:border-slate-400 hover:bg-[#F5F0E8]"
             >
               View on Amazon
             </Link>

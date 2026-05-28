@@ -34,7 +34,7 @@ function PreviewPanel({ template, onClose }: { template: TLCTemplate; onClose: (
         </div>
         <button
           onClick={onClose}
-          className="flex shrink-0 items-center justify-center rounded-sm border border-border bg-white p-1.5 text-muted-foreground transition-colors hover:text-foreground"
+          className="flex shrink-0 items-center justify-center rounded-sm border border-border bg-[#F5F0E8] p-1.5 text-muted-foreground transition-colors hover:text-foreground"
           aria-label="Close preview"
         >
           <X className="size-3.5" />
@@ -85,7 +85,7 @@ function PreviewPanel({ template, onClose }: { template: TLCTemplate; onClose: (
           {template.exampleRows.map((row) => (
             <span
               key={row}
-              className="rounded-sm border border-border bg-white px-2.5 py-1 text-xs text-muted-foreground"
+              className="rounded-sm border border-border bg-[#F5F0E8] px-2.5 py-1 text-xs text-muted-foreground"
             >
               {row}
             </span>
@@ -150,7 +150,7 @@ export default function TemplateCards() {
           return (
             <div
               key={tmpl.slug}
-              className={`flex flex-col rounded-md border bg-white p-6 shadow-sm transition-colors ${
+              className={`flex flex-col rounded-md border bg-[#F5F0E8] p-6 shadow-sm transition-colors ${
                 isSelected ? "border-teal/40" : "border-border"
               }`}
             >

@@ -5,7 +5,7 @@ const amazonLink =
 
 export default function Hero() {
   return (
-    <section className="border-b border-slate-200 bg-white px-6 py-16 lg:px-8 lg:py-20">
+    <section className="border-b border-slate-200 bg-[#F5F0E8] px-6 py-16 lg:px-8 lg:py-20">
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 lg:grid-cols-[0.95fr_0.75fr]">
         <div className="max-w-2xl">
           <h1 className="text-3xl font-bold leading-tight tracking-[-0.015em] text-foreground sm:text-4xl lg:text-5xl">
@@ -27,7 +27,7 @@ export default function Hero() {
           <div className="mt-8">
             <Link
               href="/system"
-              className="inline-flex h-12 items-center justify-center rounded-md border border-slate-300 bg-white px-6 text-sm font-semibold text-slate-900 transition hover:border-slate-400 hover:bg-slate-50"
+              className="inline-flex h-12 items-center justify-center rounded-md border border-slate-300 bg-[#F5F0E8] px-6 text-sm font-semibold text-slate-900 transition hover:border-slate-400 hover:bg-[#F5F0E8]"
             >
               Explore the System
             </Link>
@@ -51,7 +51,7 @@ export default function Hero() {
             href={amazonLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-8 inline-flex h-14 w-[315px] items-center justify-center gap-4 rounded-lg bg-teal-600 px-8 text-lg font-bold text-white shadow-sm transition hover:bg-teal-700"
+            className="mt-8 inline-flex h-14 w-[315px] items-center justify-center gap-4 rounded-lg bg-[#9A7A3A] px-8 text-lg font-bold text-[#F5F0E8] shadow-sm transition hover:bg-[#7A5E28]"
           >
             <span className="text-4xl font-bold leading-none">a</span>
             <span>Buy on Amazon</span>

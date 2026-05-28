@@ -43,7 +43,7 @@ export default function Problem() {
             {problems.map((p) => (
               <div
                 key={p.title}
-                className="flex flex-col gap-3 rounded-md border border-border bg-white p-5 shadow-sm"
+                className="flex flex-col gap-3 rounded-md border border-border bg-[#F5F0E8] p-5 shadow-sm"
               >
                 <div className="flex items-center gap-2">
                   <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-teal/60" />

@@ -44,7 +44,7 @@ export default function Insights() {
           {signals.map((signal) => (
             <div
               key={signal.label}
-              className="flex flex-col rounded-md border border-border bg-white p-6 shadow-sm"
+              className="flex flex-col rounded-md border border-border bg-[#F5F0E8] p-6 shadow-sm"
             >
               <p className="mb-3 text-[10px] font-semibold tracking-[0.18em] text-teal uppercase">
                 {signal.label}

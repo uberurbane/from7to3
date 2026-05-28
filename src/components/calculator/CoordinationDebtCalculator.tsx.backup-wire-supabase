@@ -1,0 +1,1242 @@
+"use client";
+
+import React, { useState, useMemo, useCallback } from "react";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type OverheadPct = 0.3 | 0.45 | 0.6;
+type AIStage = "none" | "piloting" | "production" | "native";
+type Industry =
+  | "saas"
+  | "fintech"
+  | "healthcare"
+  | "enterprise"
+  | "retail"
+  | "manufacturing"
+  | "consulting"
+  | "other";
+type OrgMaturity = "startup" | "midmarket" | "enterprise" | "large";
+
+interface Recommendation {
+  text: string;
+}
+
+interface ProjectionRow {
+  year: string;
+  label: string;
+  coordCost: number;
+  costPerFeature: number;
+  vsCompetitor: string;
+  isCompetitor: boolean;
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function fmt(n: number): string {
+  if (n >= 1_000_000) return "$" + (n / 1_000_000).toFixed(1) + "M";
+  if (n >= 1_000) return "$" + Math.round(n / 1_000) + "K";
+  return "$" + n.toLocaleString();
+}
+
+function calcDebt(headcount: number, cost: number, pct: number): number {
+  return headcount * pct * cost;
+}
+
+function getProjectionRows(
+  headcount: number,
+  costPerHead: number,
+  overheadPct: number
+): ProjectionRow[] {
+  const debt = calcDebt(headcount, costPerHead, overheadPct);
+  const y1cpf = 60_000 * (costPerHead / 150_000);
+  const currentYear = new Date().getFullYear();
+
+  return [
+    {
+      year: String(currentYear),
+      label: "Baseline",
+      coordCost: debt,
+      costPerFeature: y1cpf,
+      vsCompetitor: "—",
+      isCompetitor: false,
+    },
+    {
+      year: String(currentYear + 1),
+      label: "Complexity ↑",
+      coordCost: debt * 1.28,
+      costPerFeature: y1cpf * 1.13,
+      vsCompetitor: "Gap opening",
+      isCompetitor: false,
+    },
+    {
+      year: String(currentYear + 2),
+      label: "Gap widens",
+      coordCost: debt * 1.61,
+      costPerFeature: y1cpf * 1.25,
+      vsCompetitor: "2.3× disadvantage",
+      isCompetitor: false,
+    },
+    {
+      year: "Competitor",
+      label: "Compressed Y1",
+      coordCost: debt * 0.33,
+      costPerFeature: y1cpf * 0.55,
+      vsCompetitor: "40% price advantage",
+      isCompetitor: true,
+    },
+  ];
+}
+
+function getRecommendations(aiStage: AIStage): Recommendation[] {
+  const map: Record<AIStage, Recommendation[]> = {
+    none: [
+      { text: "<strong>Calculate before you deploy.</strong> You have no AI in production — this is the best time to design for compression first. Build the Token P&L architecture before the first AI feature ships." },
+      { text: "<strong>Run the Router Rule on your current org chart.</strong> Identify every role whose primary output is a document describing work. That's your compression map." },
+      { text: "<strong>Write your first kill condition.</strong> Pick one planned feature. Define the token ceiling and the explicit stop trigger before work begins. This one habit changes how all future features are governed." },
+    ],
+    piloting: [
+      { text: "<strong>You're in the Additive Trap.</strong> AI is being deployed into an existing structure without compressing that structure. Your coordination cost hasn't moved while your AI spend is increasing. Build the Token P&L for one active feature this sprint." },
+      { text: "<strong>Identify your Day 45 Stall.</strong> Most AI transformations die at Day 45 when coordination layers reassert themselves. Map the approval chain for your most AI-assisted feature. Every gate is a coordination tax you can eliminate." },
+      { text: "<strong>Pilot the Feature Ledger on one feature.</strong> Replace the PRD with a six-field executable specification including a kill condition. Run it for one sprint. Measure the cycle time difference." },
+    ],
+    production: [
+      { text: "<strong>Your Token P&L should be live.</strong> At this AI maturity stage, you need feature-level economics — not just team velocity metrics. The CFO question — \"what did we get for the AI investment?\" — needs a feature-level answer." },
+      { text: "<strong>Audit your coordination layer against your AI maturity.</strong> If AI is in production but you still have 5+ management layers, the compression hasn't happened. Run the Router Rule across your PM, BA, and coordinator functions." },
+      { text: "<strong>Build the kill condition discipline.</strong> For every active AI feature in production, define the explicit stop trigger. Celebrate the first kill. It's the cultural intervention that makes structural compression sustainable." },
+    ],
+    native: [
+      { text: "<strong>Measure Token Velocity trend.</strong> At AI-native stage, Token Velocity — the rate at which tokens are converting into business value, improving sprint-over-sprint — is your primary governance metric. If it's not improving, the system is not learning." },
+      { text: "<strong>Your Coordination Debt™ should be declining.</strong> Run the formula quarterly. A decreasing number means compression is working. A flat or increasing number means coordination layers are reasserting themselves around the AI infrastructure." },
+      { text: "<strong>Productize your operating model.</strong> At AI-native maturity, your org has built something most companies are trying to buy. Consider whether the TLC framework your team has operationalized could become an IP asset, a consulting practice, or a published methodology." },
+    ],
+  };
+  return map[aiStage];
+}
+
+function generateShareText(company: string, userName: string, debt: number, overheadPct: number): string {
+  const org = company ? company + "'s" : userName ? userName + "'s organization's" : "Our";
+  return `${org} estimated annual Coordination Debt™: ${fmt(debt)}/year.\n\nThis is what we're paying for coordination that AI has made structurally unnecessary — if we change the structure.\n\nFormula: Headcount × ${Math.round(overheadPct * 100)}% × Fully-Loaded Cost\n\nCalculate yours: from7to3.com\n\nBased on the TLC framework in FROM 7 TO 3 by Sandeep Panigrahi.`;
+}
+
+function generateLinkedInUrl(debt: number): string {
+  const text = encodeURIComponent(
+    `I just calculated our Coordination Debt: ${fmt(debt)}/year.\n\nThat's what we're paying in meetings, approvals, and status updates that AI has made structurally unnecessary — if we change the structure.\n\nCalculated using the formula from FROM 7 TO 3 by Sandeep Panigrahi: from7to3.com`
+  );
+  return `https://www.linkedin.com/sharing/share-offsite/?url=https://from7to3.com&summary=${text}`;
+}
+
+// ─── Design tokens (light theme) ─────────────────────────────────────────────
+// Background: warm off-white  #F5F0E8
+// Surface:    white-ish       #FAFAF6
+// Border:     warm grey       #DDD8CE
+// Ink:        near-black      #1A1714
+// Gold:       brand gold      #9A7A3A
+// Muted:      warm grey text  #7A7268
+// Danger:     muted red       #B03030
+// Success:    muted green     #2A6A4A
+
+// ─── Report HTML generator ────────────────────────────────────────────────────
+
+function buildReportHtml(
+  orgName: string,
+  headcount: number,
+  avgCost: number,
+  overheadPct: number,
+  debt: number,
+  industry: string,
+  orgMaturity: string,
+  aiStage: string,
+  projectionRows: ProjectionRow[],
+  taxes: { n: string; name: string; desc: string; stat: string }[],
+  taxAmounts: number[],
+  recommendations: Recommendation[]
+): string {
+  const pct = Math.round(overheadPct * 100);
+  const currentYear = new Date().getFullYear();
+  const dateStr = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+
+  const taxRows = taxes.map((t, i) => `
+    <tr>
+      <td class="tax-n">TAX ${t.n}</td>
+      <td><strong>${t.name}</strong><br/><span class="muted">${t.desc}</span><br/><span class="stat">${t.stat}</span></td>
+      <td class="number red">${fmt(taxAmounts[i])}/yr</td>
+    </tr>`).join("");
+
+  const projRows = projectionRows.map((row, idx) => `
+    <tr class="${row.isCompetitor ? "comp-row" : ""}">
+      <td><strong>${row.year}</strong><br/><span class="muted small">${row.label}</span></td>
+      <td>${fmt(row.coordCost)}${idx === 1 ? ' <span class="red small">+28%</span>' : idx === 2 ? ' <span class="red small">+61%</span>' : ""}</td>
+      <td>${fmt(row.costPerFeature)}</td>
+      <td>${row.vsCompetitor}</td>
+    </tr>`).join("");
+
+  const recItems = recommendations.map((r, i) => `
+    <div class="rec-item">
+      <span class="rec-n">0${i + 1}</span>
+      <span>${r.text}</span>
+    </div>`).join("");
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Coordination Debt Report — ${orgName}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:#F5F0E8;color:#1A1714;font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;}
+  @media print{body{background:white;} .no-print{display:none;} .page-break{page-break-before:always;}}
+
+  /* Layout */
+  .page{max-width:800px;margin:0 auto;padding:48px 40px;}
+  .section{background:#FAFAF6;border:1px solid #DDD8CE;border-radius:3px;padding:32px;margin-bottom:24px;}
+  .section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;color:#9A7A3A;text-transform:uppercase;margin-bottom:8px;}
+  .section-title{font-family:'Playfair Display',serif;font-size:20px;color:#1A1714;margin-bottom:20px;}
+
+  /* Header */
+  .report-header{background:#1A1714;color:#F5F0E8;padding:48px 40px;position:relative;overflow:hidden;}
+  .report-header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#9A7A3A,#C8A96E,#9A7A3A);}
+  .header-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:4px;color:#9A7A3A;text-transform:uppercase;margin-bottom:16px;}
+  .header-org{font-family:'Playfair Display',serif;font-size:15px;color:#7A7268;margin-bottom:8px;}
+  .header-number{font-family:'Playfair Display',serif;font-size:72px;color:#C8A96E;line-height:1;margin-bottom:8px;}
+  .header-label{font-size:13px;color:#7A7268;margin-bottom:20px;}
+  .header-formula{font-family:'DM Mono',monospace;font-size:13px;color:#5A5248;background:#111;padding:12px 18px;border-radius:2px;display:inline-block;margin-bottom:14px;}
+  .disclaimer{font-size:11px;color:#5A5248;font-style:italic;}
+
+  /* Formula breakdown */
+  .formula-grid{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+  .formula-cell{flex:1;min-width:80px;background:#F5F0E8;border:1px solid #DDD8CE;border-radius:2px;padding:14px 10px;text-align:center;}
+  .formula-cell.result{background:#1A1714;border-color:#3A3028;}
+  .fc-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;color:#AAA09A;text-transform:uppercase;margin-bottom:6px;}
+  .formula-cell.result .fc-label{color:#9A7A3A;}
+  .fc-value{font-family:'Playfair Display',serif;font-size:17px;color:#1A1714;margin-bottom:3px;}
+  .formula-cell.result .fc-value{color:#C8A96E;font-size:20px;}
+  .fc-sub{font-size:10px;color:#AAA09A;}
+  .formula-cell.result .fc-sub{color:#7A7268;}
+  .op{font-family:'Playfair Display',serif;font-size:22px;color:#AAA09A;flex-shrink:0;}
+
+  /* Source notes */
+  .source-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .source-box{background:#F0EBE0;border:1px solid #E8E2D8;border-radius:2px;padding:14px;}
+  .source-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#9A7A3A;text-transform:uppercase;margin-bottom:8px;}
+  .source-desc{font-size:12px;color:#7A7268;line-height:1.6;}
+
+  /* Metric grid */
+  .metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px;}
+  .metric-box{background:#F5F0E8;border:1px solid #DDD8CE;border-radius:2px;padding:20px;}
+  .metric-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#AAA09A;text-transform:uppercase;margin-bottom:8px;}
+  .metric-value{font-family:'Playfair Display',serif;font-size:26px;margin-bottom:4px;}
+  .metric-sub{font-size:12px;color:#7A7268;}
+  .red{color:#B03030!important;}
+  .gold{color:#9A7A3A!important;}
+
+  /* Table */
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+  th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#AAA09A;text-align:left;padding:10px 14px;border-bottom:1px solid #E8E2D8;background:#F0EBE0;}
+  td{padding:13px 14px;border-bottom:1px solid #EDE8DE;color:#5A5248;vertical-align:top;}
+  .tax-n{font-family:'DM Mono',monospace;font-size:10px;color:#9A7A3A;white-space:nowrap;}
+  .comp-row td{color:#2A6A4A!important;background:rgba(42,106,74,0.05);}
+  .number{font-family:'DM Mono',monospace;font-weight:500;}
+  .muted{color:#7A7268;font-size:12px;}
+  .stat{font-family:'DM Mono',monospace;font-size:10px;color:#AAA09A;display:block;margin-top:4px;}
+  .small{font-size:11px;}
+
+  /* Recs */
+  .rec-item{display:flex;gap:16px;align-items:flex-start;padding:16px 0;border-bottom:1px solid #E8E2D8;}
+  .rec-item:last-child{border-bottom:none;}
+  .rec-n{font-family:'DM Mono',monospace;font-size:11px;color:#9A7A3A;min-width:24px;padding-top:2px;flex-shrink:0;}
+
+  /* Context */
+  .context-row{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:16px;}
+  .context-item{flex:1;min-width:140px;}
+  .context-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#AAA09A;text-transform:uppercase;margin-bottom:4px;}
+  .context-value{font-size:14px;color:#1A1714;font-weight:500;}
+
+  /* Insight callout */
+  .callout{background:#F0EBE0;border-left:3px solid #9A7A3A;padding:16px 20px;border-radius:0 2px 2px 0;margin:20px 0;font-size:13px;color:#5A5248;line-height:1.7;}
+
+  /* Footer */
+  .report-footer{text-align:center;padding:32px 0;font-family:'DM Mono',monospace;font-size:10px;color:#AAA09A;line-height:1.8;}
+
+  /* Print button */
+  .print-bar{background:#1A1714;color:#F5F0E8;padding:16px 40px;display:flex;justify-content:space-between;align-items:center;}
+  .print-bar-text{font-size:13px;color:#7A7268;}
+  .print-btn{background:#9A7A3A;color:#F5F0E8;border:none;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:12px 24px;cursor:pointer;border-radius:2px;}
+  .print-btn:hover{background:#7A5E28;}
+</style>
+</head>
+<body>
+
+<!-- Print bar -->
+<div class="print-bar no-print">
+  <span class="print-bar-text">Coordination Debt Report · from7to3.com · Open in browser → File → Print → Save as PDF</span>
+  <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+</div>
+
+<!-- Header -->
+<div class="report-header">
+  <div class="header-tag">Estimated Coordination Debt Report · from7to3.com</div>
+  <div class="header-org">${orgName}</div>
+  <div class="header-number">${fmt(debt)}</div>
+  <div class="header-label">estimated annual coordination debt</div>
+  <div class="header-formula">${headcount.toLocaleString()} × ${pct}% × ${fmt(avgCost)}</div><br/>
+  <div class="disclaimer">This estimate is directional and intended for executive planning, not formal accounting. Generated ${dateStr}.</div>
+</div>
+
+<div class="page">
+
+  <!-- Context -->
+  <div class="section">
+    <div class="section-label">Organization Profile</div>
+    <div class="context-row">
+      <div class="context-item"><div class="context-label">Headcount</div><div class="context-value">${headcount.toLocaleString()} employees</div></div>
+      <div class="context-item"><div class="context-label">Avg. Fully-Loaded Cost</div><div class="context-value">${fmt(avgCost)} / employee / year</div></div>
+      <div class="context-item"><div class="context-label">Overhead Rate</div><div class="context-value">${pct}%</div></div>
+      <div class="context-item"><div class="context-label">Industry</div><div class="context-value">${industry.charAt(0).toUpperCase() + industry.slice(1)}</div></div>
+      <div class="context-item"><div class="context-label">Org Maturity</div><div class="context-value">${orgMaturity.charAt(0).toUpperCase() + orgMaturity.slice(1)}</div></div>
+      <div class="context-item"><div class="context-label">AI Adoption Stage</div><div class="context-value">${aiStage.charAt(0).toUpperCase() + aiStage.slice(1)}</div></div>
+    </div>
+  </div>
+
+  <!-- Formula Breakdown -->
+  <div class="section">
+    <div class="section-label">How This Number Was Calculated</div>
+    <div class="section-title">The Coordination Debt Formula</div>
+    <div class="formula-grid">
+      <div class="formula-cell"><div class="fc-label">Total Headcount</div><div class="fc-value">${headcount.toLocaleString()}</div><div class="fc-sub">Your org size</div></div>
+      <div class="op">×</div>
+      <div class="formula-cell"><div class="fc-label">Overhead Rate</div><div class="fc-value">${pct}%</div><div class="fc-sub">Coordination overhead</div></div>
+      <div class="op">×</div>
+      <div class="formula-cell"><div class="fc-label">Avg. Cost</div><div class="fc-value">${fmt(avgCost)}</div><div class="fc-sub">Per employee / year</div></div>
+      <div class="op">=</div>
+      <div class="formula-cell result"><div class="fc-label">Coordination Debt</div><div class="fc-value">${fmt(debt)}</div><div class="fc-sub">Annual structural cost</div></div>
+    </div>
+    <div class="source-grid">
+      <div class="source-box"><div class="source-label">30% Floor — Validated By</div><div class="source-desc">McKinsey (2022): management overhead consumes 40–65% of management time. LinearB (2023): 57% of feature cycle time is in coordination queues. These sources validate the floor — the Coordination Debt formula itself was developed by Sandeep Panigrahi.</div></div>
+      <div class="source-box"><div class="source-label">Overhead Rate Applied</div><div class="source-desc">You selected ${pct}% — reflecting your org's management layers and approval chain complexity.</div></div>
+      <div class="source-box"><div class="source-label">Why It Compounds</div><div class="source-desc">Coordination Debt compounds every sprint cycle it goes unaddressed, growing through delayed decisions, rework, and approval latency.</div></div>
+    </div>
+  </div>
+
+  <!-- Key Metrics -->
+  <div class="section">
+    <div class="section-label">Key Metrics</div>
+    <div class="metric-grid">
+      <div class="metric-box"><div class="metric-label">Annual Coordination Debt</div><div class="metric-value red">${fmt(debt)}</div><div class="metric-sub">Funding information movement, not output</div></div>
+      <div class="metric-box"><div class="metric-label">Monthly Burn</div><div class="metric-value">${fmt(debt / 12)}</div><div class="metric-sub">Per month in structural coordination cost</div></div>
+      <div class="metric-box"><div class="metric-label">Compression Opportunity</div><div class="metric-value gold">${fmt(debt * 0.67)}</div><div class="metric-sub">Recoverable through three-layer restructure</div></div>
+      <div class="metric-box"><div class="metric-label">Coordination Roles</div><div class="metric-value">~${Math.round(headcount * overheadPct).toLocaleString()}</div><div class="metric-sub">Estimated FTEs in primary coordination functions</div></div>
+    </div>
+    <div class="callout">
+      <strong>The Router Rule:</strong> Apply this test to every coordination role — <em>"Is this role's primary output a document describing work, or the work itself?"</em> If the answer is a document, report, or status update, the role is a coordination function. That's your compression map.
+    </div>
+  </div>
+
+  <!-- 3-Year Projection -->
+  <div class="section page-break">
+    <div class="section-label">3-Year Compounding Projection</div>
+    <div class="section-title">What inaction costs</div>
+    <table>
+      <thead><tr><th>Year</th><th>Coord. Cost</th><th>Cost / Feature</th><th>vs. Competitor</th></tr></thead>
+      <tbody>${projRows}</tbody>
+    </table>
+    <div class="callout">
+      By Year 3, a competitor who compressed in Year 1 can underprice you by 40% while maintaining margins, ship features twice as fast, and reinvest ${fmt(debt * 1.61 - debt * 0.33)} in annual savings into product R&D. Both organizations have AI. The divergence is structural, not technological.
+    </div>
+  </div>
+
+  <!-- Four Coordination Taxes -->
+  <div class="section">
+    <div class="section-label">Your Coordination Taxes</div>
+    <div class="section-title">Where the debt comes from</div>
+    <table>
+      <thead><tr><th>Tax</th><th>Description</th><th>Est. Annual Cost</th></tr></thead>
+      <tbody>${taxRows}</tbody>
+    </table>
+  </div>
+
+  <!-- Recommendations -->
+  <div class="section">
+    <div class="section-label">Recommendations for Your Org</div>
+    <div class="section-title">Three Actions Based on Your AI Stage</div>
+    ${recItems}
+  </div>
+
+  <!-- The Framework -->
+  <div class="section">
+    <div class="section-label">The Operating System That Closes This Gap</div>
+    <div class="section-title">Token Learning Control™ (TLC) Framework</div>
+    <p style="font-size:13px;color:#5A5248;line-height:1.7;margin-bottom:20px;">
+      The Coordination Debt is calculable. The governance gap is closable. But you have to build both. The Token Learning Control™ (TLC) framework is the operating system that connects feature-level kill conditions → sprint-level token allocation → organizational mandate → runtime governance → CFO-governable Token P&L, running as one closed loop.
+    </p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+      ${[
+        { n: "01", name: "Token P&L", desc: "Feature-level economics showing which features generated ROI > 1.0x and which consumed cognitive capital without proportional return." },
+        { n: "02", name: "Kill Conditions", desc: "Automatic stop triggers defined before execution begins. Capital redeployment without politics. The governance Klarna didn't build." },
+        { n: "03", name: "Feature Ledger", desc: "Replaces PRDs with six-field executable specifications. Eliminates the BA translation layer by design." },
+      ].map(({ n, name, desc }) => `
+        <div style="background:#F0EBE0;border:1px solid #E8E2D8;border-radius:2px;padding:16px;">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#9A7A3A;text-transform:uppercase;margin-bottom:8px;">INSTRUMENT ${n}</div>
+          <div style="font-family:'Playfair Display',serif;font-size:15px;color:#1A1714;margin-bottom:8px;">${name}</div>
+          <div style="font-size:12px;color:#7A7268;line-height:1.6;">${desc}</div>
+        </div>`).join("")}
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div style="background:#1A1714;border-radius:3px;padding:32px;text-align:center;margin-bottom:24px;">
+    <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;color:#9A7A3A;text-transform:uppercase;margin-bottom:12px;">Next Step</div>
+    <div style="font-family:'Playfair Display',serif;font-size:24px;color:#F5F0E8;margin-bottom:8px;">FROM 7 TO 3</div>
+    <div style="font-size:13px;color:#7A7268;margin-bottom:20px;">The operating manual for closing this gap — the complete Token Learning Control™ (TLC) framework.</div>
+    <div style="font-family:'DM Mono',monospace;font-size:12px;color:#9A7A3A;letter-spacing:2px;">from7to3.com</div>
+  </div>
+
+  <div class="report-footer">
+    The Coordination Debt formula (Headcount × Overhead% × Fully-Loaded Cost) was developed by Sandeep Panigrahi and introduced in FROM 7 TO 3 (Constraint Press, 2026).<br/>
+    The 30% overhead floor is validated by independent research: McKinsey Global Institute (2022) · LinearB Engineering Benchmarks (2023) · HBR (2017) · Ewens &amp; Giroud, NBER Working Paper 34162 (2025).<br/>
+    These sources validate the inputs to the formula. They did not originate it.<br/>
+    © 2026 Sandeep Panigrahi · from7to3.com · Token Learning Control™ (TLC)<br/>
+    Generated ${dateStr}
+  </div>
+
+</div>
+</body>
+</html>`;
+}
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+function ProgressBar({ step }: { step: number }) {
+  const labels = ["Headcount", "Overhead", "Context", "Your Result"];
+  return (
+    <div style={{ marginBottom: 40 }}>
+      <div style={{ display: "flex", gap: 4, marginBottom: 10 }}>
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            style={{
+              flex: 1,
+              height: 2,
+              background:
+                i < step ? "#9A7A3A" : i === step ? "linear-gradient(90deg,#9A7A3A,#DDD8CE)" : "#DDD8CE",
+              transition: "background 0.4s",
+            }}
+          />
+        ))}
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        {labels.map((label, idx) => {
+          const i = idx + 1;
+          const color = i < step ? "#AAA09A" : i === step ? "#9A7A3A" : "#BDB8B0";
+          return (
+            <span
+              key={label}
+              style={{
+                fontFamily: "'DM Mono', monospace",
+                fontSize: 9,
+                letterSpacing: 2,
+                color,
+                textTransform: "uppercase",
+                transition: "color 0.3s",
+              }}
+            >
+              {label}
+            </span>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function Card({ children, visible }: { children: React.ReactNode; visible: boolean }) {
+  if (!visible) return null;
+  return (
+    <div
+      style={{
+        background: "#FAFAF6",
+        border: "1px solid #DDD8CE",
+        borderRadius: 3,
+        padding: 40,
+        marginBottom: 20,
+        animation: "fadeUp 0.35s ease",
+        boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function StepLabel({ text }: { text: string }) {
+  return (
+    <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 3, color: "#9A7A3A", textTransform: "uppercase", marginBottom: 8 }}>
+      {text}
+    </div>
+  );
+}
+
+function CardTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 26, color: "#1A1714", marginBottom: 6, lineHeight: 1.3 }}>
+      {children}
+    </div>
+  );
+}
+
+function CardSub({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ fontSize: 13, color: "#7A7268", lineHeight: 1.6, marginBottom: 32 }}>
+      {children}
+    </div>
+  );
+}
+
+function LivePreview({ label, value, sub, formula }: { label: string; value: string; sub: string; formula?: string }) {
+  return (
+    <div
+      style={{
+        background: "#F0EBE0",
+        border: "1px solid #DDD8CE",
+        borderLeft: "3px solid #9A7A3A",
+        padding: "20px 24px",
+        margin: "24px 0",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: 12,
+        borderRadius: 2,
+      }}
+    >
+      <div>
+        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 2, color: "#9A7A3A", textTransform: "uppercase", marginBottom: 4 }}>
+          {label}
+        </div>
+        <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 32, color: "#1A1714" }}>
+          {value}
+        </div>
+        <div style={{ fontSize: 12, color: "#7A7268", marginTop: 2 }}>{sub}</div>
+      </div>
+      {formula && (
+        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#AAA09A", lineHeight: 1.8, textAlign: "right" }}>
+          {formula}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Main Component ───────────────────────────────────────────────────────────
+
+export default function CoordinationDebtCalculator() {
+  const [step, setStep] = useState<number>(1);
+  const [headcount, setHeadcount] = useState<number>(200);
+  const [avgCost, setAvgCost] = useState<number>(150_000);
+  const [overheadPct, setOverheadPct] = useState<OverheadPct>(0.45);
+  const [industry, setIndustry] = useState<Industry>("saas");
+  const [orgMaturity, setOrgMaturity] = useState<OrgMaturity>("midmarket");
+  const [aiStage, setAiStage] = useState<AIStage>("piloting");
+  const [email, setEmail] = useState<string>("");
+  const [company, setCompany] = useState<string>("");
+  const [userName, setUserName] = useState<string>("");
+  const [resultRevealed, setResultRevealed] = useState<boolean>(false);
+  const [copyLabel, setCopyLabel] = useState<string>("Copy Result");
+
+  const debt = useMemo(() => calcDebt(headcount, avgCost, overheadPct), [headcount, avgCost, overheadPct]);
+  const isEmailValid = useMemo(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email), [email]);
+  const orgName = useMemo(() => company ? company : userName ? `${userName}'s Organization` : "Your Organization", [company, userName]);
+  const projectionRows = useMemo(() => getProjectionRows(headcount, avgCost, overheadPct), [headcount, avgCost, overheadPct]);
+  const recommendations = useMemo(() => getRecommendations(aiStage), [aiStage]);
+  const taxAmounts = useMemo(() => [debt * 0.35, debt * 0.28, debt * 0.22, debt * 0.15], [debt]);
+
+  const handleReveal = useCallback(() => {
+    if (!isEmailValid) return;
+    setResultRevealed(true);
+    setStep(5);
+  }, [isEmailValid]);
+
+  const handleCopy = useCallback(() => {
+    const text = generateShareText(company, userName, debt, overheadPct);
+    navigator.clipboard.writeText(text).then(() => {
+      setCopyLabel("Copied ✓");
+      setTimeout(() => setCopyLabel("Copy Result"), 2000);
+    });
+  }, [company, userName, debt, overheadPct]);
+
+  const handleLinkedIn = useCallback(() => {
+    window.open(generateLinkedInUrl(debt), "_blank");
+  }, [debt]);
+
+  const taxes = useMemo(() => [
+    { n: "01", name: "Translation Cost", desc: "BA-to-developer-to-QA handoffs. Each translation introduces error, delay, and cost. At AI execution speed, translation overhead consumes disproportionate cycle time.", stat: "57% of cycle time in queues" },
+    { n: "02", name: "Latency Cost", desc: "Approval chains, prioritization queues, release windows. Every gate creates a wait. For a 3-hour build, an 11-day cycle is structural — not accidental.", stat: "LinearB: 3,000 dev teams" },
+    { n: "03", name: "Duplication Cost", desc: "Decisions made at team level, remade at department, remade at exec. McKinsey documented 35–60% decision duplication across organizations.", stat: "35–60% of decisions duplicated" },
+    { n: "04", name: "Reporting Cost", desc: "Status reports describe work dashboards already track. Widens as AI accelerates execution — reporting requirements don't accelerate with it.", stat: "Overhead widens as AI scales up" },
+  ], []);
+
+  // Shared button styles
+  const nextBtn: React.CSSProperties = {
+    background: "#9A7A3A", color: "#FAFAF6", border: "none",
+    fontFamily: "'DM Mono', monospace", fontSize: 11, letterSpacing: 2,
+    textTransform: "uppercase", padding: "14px 32px", cursor: "pointer",
+    borderRadius: 2, fontWeight: 500, transition: "background 0.2s",
+  };
+  const backBtn: React.CSSProperties = {
+    background: "transparent", border: "1px solid #DDD8CE", color: "#7A7268",
+    fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 2,
+    textTransform: "uppercase", padding: "12px 20px", cursor: "pointer",
+    borderRadius: 2, transition: "all 0.2s",
+  };
+
+  return (
+    <>
+      <style jsx global>{`
+        @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Instrument+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap");
+
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cdc-slider {
+          width: 100%;
+          appearance: none;
+          -webkit-appearance: none;
+          height: 2px;
+          background: #DDD8CE;
+          border-radius: 0;
+          outline: none;
+          cursor: pointer;
+        }
+        .cdc-slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 20px;
+          height: 20px;
+          background: #9A7A3A;
+          border-radius: 50%;
+          cursor: pointer;
+          box-shadow: 0 0 0 3px rgba(154,122,58,0.15);
+          transition: box-shadow 0.2s;
+        }
+        .cdc-slider:hover::-webkit-slider-thumb {
+          box-shadow: 0 0 0 6px rgba(154,122,58,0.2);
+        }
+        .cdc-slider::-moz-range-thumb {
+          width: 20px; height: 20px;
+          background: #9A7A3A;
+          border-radius: 50%;
+          cursor: pointer;
+          border: none;
+        }
+
+        .cdc-select {
+          width: 100%;
+          background: #FAFAF6;
+          border: 1px solid #DDD8CE;
+          color: #1A1714;
+          font-family: "Instrument Sans", sans-serif;
+          font-size: 13px;
+          padding: 12px 36px 12px 14px;
+          border-radius: 2px;
+          outline: none;
+          cursor: pointer;
+          appearance: none;
+          -webkit-appearance: none;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239A7A3A'/%3E%3C/svg%3E");
+          background-repeat: no-repeat;
+          background-position: right 14px center;
+          background-color: #FAFAF6;
+          transition: border-color 0.2s;
+        }
+        .cdc-select:focus { border-color: #9A7A3A; }
+        .cdc-select option { background: #FAFAF6; color: #1A1714; }
+
+        .cdc-text-input {
+          background: #FAFAF6;
+          border: 1px solid #DDD8CE;
+          color: #1A1714;
+          font-family: "Instrument Sans", sans-serif;
+          font-size: 14px;
+          padding: 14px 16px;
+          border-radius: 2px;
+          outline: none;
+          transition: border-color 0.2s;
+          width: 100%;
+        }
+        .cdc-text-input:focus { border-color: #9A7A3A; }
+        .cdc-text-input::placeholder { color: #BDB8B0; }
+
+        .oh-opt {
+          border: 1px solid #DDD8CE;
+          border-radius: 2px;
+          padding: 20px 14px;
+          cursor: pointer;
+          text-align: center;
+          transition: all 0.2s;
+          background: #F5F0E8;
+        }
+        .oh-opt:hover { border-color: #9A7A3A; }
+        .oh-opt.selected { border-color: #9A7A3A; background: rgba(154,122,58,0.07); }
+
+        .ai-stage-opt {
+          border: 1px solid #DDD8CE;
+          border-radius: 2px;
+          padding: 16px 10px;
+          cursor: pointer;
+          text-align: center;
+          transition: all 0.2s;
+          background: #F5F0E8;
+        }
+        .ai-stage-opt:hover { border-color: #9A7A3A; }
+        .ai-stage-opt.selected { border-color: #9A7A3A; background: rgba(154,122,58,0.07); }
+
+        .nav-next-btn {
+          background: #9A7A3A;
+          color: #FAFAF6;
+          border: none;
+          font-family: "DM Mono", monospace;
+          font-size: 11px;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          padding: 14px 32px;
+          cursor: pointer;
+          border-radius: 2px;
+          font-weight: 500;
+          transition: background 0.2s;
+        }
+        .nav-next-btn:hover { background: #7A5E28; }
+
+        .nav-back-btn {
+          background: transparent;
+          border: 1px solid #DDD8CE;
+          color: #7A7268;
+          font-family: "DM Mono", monospace;
+          font-size: 10px;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          padding: 12px 20px;
+          cursor: pointer;
+          border-radius: 2px;
+          transition: all 0.2s;
+        }
+        .nav-back-btn:hover { border-color: #9A7A3A; color: #9A7A3A; }
+
+        .submit-btn {
+          background: #9A7A3A;
+          color: #FAFAF6;
+          border: none;
+          font-family: "DM Mono", monospace;
+          font-size: 11px;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          padding: 14px 24px;
+          cursor: pointer;
+          border-radius: 2px;
+          white-space: nowrap;
+          font-weight: 500;
+          transition: background 0.2s, transform 0.1s;
+        }
+        .submit-btn:hover:not(:disabled) { background: #7A5E28; }
+        .submit-btn:active:not(:disabled) { transform: scale(0.98); }
+        .submit-btn:disabled { background: #DDD8CE; color: #AAA09A; cursor: default; }
+
+        .share-btn {
+          border: 1px solid #DDD8CE;
+          background: transparent;
+          color: #7A7268;
+          font-family: "DM Mono", monospace;
+          font-size: 10px;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          padding: 10px 16px;
+          cursor: pointer;
+          border-radius: 2px;
+          transition: all 0.2s;
+        }
+        .share-btn:hover { border-color: #9A7A3A; color: #9A7A3A; }
+
+        .bc-btn {
+          background: #9A7A3A;
+          color: #FAFAF6;
+          border: none;
+          font-family: "DM Mono", monospace;
+          font-size: 11px;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          padding: 14px 24px;
+          cursor: pointer;
+          border-radius: 2px;
+          white-space: nowrap;
+          font-weight: 500;
+          transition: background 0.2s;
+        }
+        .bc-btn:hover { background: #7A5E28; }
+
+        .proj-row-yours td { color: #1A1714; }
+        .proj-row-competitor { background: rgba(42,106,74,0.06); }
+        .proj-row-competitor td { color: #2A6A4A !important; }
+
+        @media (max-width: 600px) {
+          .cdc-card-inner { padding: 24px 16px !important; }
+          .overhead-grid { grid-template-columns: 1fr !important; }
+          .ai-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .breakdown-grid { grid-template-columns: 1fr !important; }
+          .select-grid { grid-template-columns: 1fr !important; }
+          .input-row { flex-direction: column !important; }
+          .share-bar-inner { flex-direction: column !important; }
+        }
+      `}</style>
+
+      {/* Page wrapper — LIGHT background */}
+      <div
+        style={{
+          background: "#F5F0E8",
+          minHeight: "100vh",
+          fontFamily: "'Instrument Sans', sans-serif",
+          color: "#1A1714",
+          position: "relative",
+        }}
+      >
+        {/* Subtle grid texture */}
+        <div
+          style={{
+            position: "fixed", inset: 0,
+            backgroundImage:
+              "linear-gradient(rgba(154,122,58,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(154,122,58,0.04) 1px, transparent 1px)",
+            backgroundSize: "60px 60px",
+            pointerEvents: "none",
+            zIndex: 0,
+          }}
+        />
+
+        <div
+          style={{
+            width: "100%", maxWidth: 760,
+            margin: "0 auto",
+            padding: "40px 24px 80px",
+            position: "relative", zIndex: 1,
+          }}
+        >
+          {/* Header */}
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 4, color: "#9A7A3A", textTransform: "uppercase", display: "block", marginBottom: 16 }}>
+              From 7 to 3 · TLC Framework
+            </span>
+            <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(28px,5vw,44px)", lineHeight: 1.15, color: "#1A1714", marginBottom: 12 }}>
+              Estimated Coordination Debt™
+              <br />
+              <em style={{ color: "#9A7A3A", fontStyle: "italic" }}>Assessment</em>
+            </h1>
+            <p style={{ fontSize: 14, color: "#7A7268", lineHeight: 1.7, maxWidth: 500, margin: "0 auto" }}>
+              Calculate what your organizational structure may be costing you — beyond headcount. Based on the framework in <em>FROM 7 TO 3</em> by Sandeep Panigrahi.
+            </p>
+          </div>
+
+          {/* Progress */}
+          <ProgressBar step={step > 4 ? 4 : step} />
+
+          {/* ── STEP 1 ── */}
+          <Card visible={step === 1}>
+            <div className="cdc-card-inner">
+              <StepLabel text="Step 1 of 4" />
+              <CardTitle>Your Organization</CardTitle>
+              <CardSub>Start with your org size and fully-loaded cost. These two numbers power the Coordination Debt formula.</CardSub>
+
+              {/* Headcount */}
+              <div style={{ marginBottom: 28 }}>
+                <div style={{ fontSize: 12, fontWeight: 500, color: "#5A5248", marginBottom: 10, display: "flex", justifyContent: "space-between" }}>
+                  <span>Total headcount</span>
+                  <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 14, color: "#9A7A3A" }}>{headcount.toLocaleString()}</span>
+                </div>
+                <input type="range" className="cdc-slider" min={10} max={5000} value={headcount} onChange={(e) => setHeadcount(Number(e.target.value))} />
+                <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "'DM Mono', monospace", fontSize: 10, color: "#BDB8B0", marginTop: 6 }}>
+                  <span>10</span><span>5,000</span>
+                </div>
+              </div>
+
+              {/* Cost */}
+              <div style={{ marginBottom: 28 }}>
+                <div style={{ fontSize: 12, fontWeight: 500, color: "#5A5248", marginBottom: 10, display: "flex", justifyContent: "space-between" }}>
+                  <span>Avg. fully-loaded annual cost per employee</span>
+                  <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 14, color: "#9A7A3A" }}>{fmt(avgCost)}</span>
+                </div>
+                <input type="range" className="cdc-slider" min={50000} max={400000} step={5000} value={avgCost} onChange={(e) => setAvgCost(Number(e.target.value))} />
+                <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "'DM Mono', monospace", fontSize: 10, color: "#BDB8B0", marginTop: 6 }}>
+                  <span>$50K</span><span>$400K</span>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
+                <button className="nav-next-btn" onClick={() => setStep(2)}>Continue →</button>
+              </div>
+            </div>
+          </Card>
+
+          {/* ── STEP 2 ── */}
+          <Card visible={step === 2}>
+            <div className="cdc-card-inner">
+              <StepLabel text="Step 2 of 4" />
+              <CardTitle>Coordination Overhead</CardTitle>
+              <CardSub>McKinsey documents 40–65% in management-heavy orgs. The default 30% is the conservative floor. Select what best reflects your structure.</CardSub>
+
+              <div className="overhead-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, marginBottom: 20 }}>
+                {([
+                  { pct: 0.3 as OverheadPct, label: "30%", desc: "Conservative floor. Lean org, few layers, minimal process overhead." },
+                  { pct: 0.45 as OverheadPct, label: "45%", desc: "Typical. 3–5 management layers, standard approval chains, regular reporting cycles." },
+                  { pct: 0.6 as OverheadPct, label: "60%", desc: "Complex. 5+ layers, multi-stakeholder approvals, heavy governance and compliance." },
+                ]).map(({ pct, label, desc }) => (
+                  <div key={pct} className={`oh-opt${overheadPct === pct ? " selected" : ""}`} onClick={() => setOverheadPct(pct)}>
+                    <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 26, color: overheadPct === pct ? "#9A7A3A" : "#1A1714", marginBottom: 6 }}>{label}</div>
+                    <div style={{ fontSize: 11, color: "#7A7268", lineHeight: 1.5 }}>{desc}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ fontSize: 12, color: "#7A7268", lineHeight: 1.6, marginBottom: 24, borderLeft: "2px solid #DDD8CE", paddingLeft: 16 }}>
+                LinearB analyzed 3,000 development teams and found <strong style={{ color: "#5A5248" }}>57% of feature cycle time</strong> is spent in coordination queues — not execution. A 2017 HBR study of 1,500 knowledge workers found meetings and coordination consumed <strong style={{ color: "#5A5248" }}>41% of productive time</strong> on average.
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8 }}>
+                <button className="nav-back-btn" onClick={() => setStep(1)}>← Back</button>
+                <button className="nav-next-btn" onClick={() => setStep(3)}>Continue →</button>
+              </div>
+            </div>
+          </Card>
+
+          {/* ── STEP 3 ── */}
+          <Card visible={step === 3}>
+            <div className="cdc-card-inner">
+              <StepLabel text="Step 3 of 4" />
+              <CardTitle>Your Context</CardTitle>
+              <CardSub>Help us personalize your result and three-year compounding projection.</CardSub>
+
+              <div className="select-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
+                <div>
+                  <label style={{ fontSize: 12, color: "#7A7268", display: "block", marginBottom: 8, fontWeight: 500 }}>Industry</label>
+                  <select className="cdc-select" value={industry} onChange={(e) => setIndustry(e.target.value as Industry)}>
+                    <option value="saas">SaaS / Software</option>
+                    <option value="fintech">Financial Services / Fintech</option>
+                    <option value="healthcare">Healthcare / Healthtech</option>
+                    <option value="enterprise">Enterprise Technology</option>
+                    <option value="retail">Retail / E-commerce</option>
+                    <option value="manufacturing">Manufacturing / Industrial</option>
+                    <option value="consulting">Consulting / Professional Services</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ fontSize: 12, color: "#7A7268", display: "block", marginBottom: 8, fontWeight: 500 }}>Org maturity</label>
+                  <select className="cdc-select" value={orgMaturity} onChange={(e) => setOrgMaturity(e.target.value as OrgMaturity)}>
+                    <option value="startup">Startup (under 100 people)</option>
+                    <option value="midmarket">Mid-market (100–1,000)</option>
+                    <option value="enterprise">Enterprise (1,000–10,000)</option>
+                    <option value="large">Large Enterprise (10,000+)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: 28 }}>
+                <div style={{ fontSize: 12, fontWeight: 500, color: "#5A5248", marginBottom: 14 }}>AI adoption stage</div>
+                <div className="ai-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8 }}>
+                  {([
+                    { value: "none" as AIStage, icon: "○", label: "No AI in production" },
+                    { value: "piloting" as AIStage, icon: "◑", label: "Piloting AI tools" },
+                    { value: "production" as AIStage, icon: "◕", label: "AI in production" },
+                    { value: "native" as AIStage, icon: "●", label: "AI-native org" },
+                  ]).map(({ value, icon, label }) => (
+                    <div key={value} className={`ai-stage-opt${aiStage === value ? " selected" : ""}`} onClick={() => setAiStage(value)}>
+                      <div style={{ fontSize: 20, marginBottom: 6, color: aiStage === value ? "#9A7A3A" : "#7A7268" }}>{icon}</div>
+                      <div style={{ fontSize: 11, color: aiStage === value ? "#9A7A3A" : "#7A7268", lineHeight: 1.3 }}>{label}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ height: 1, background: "#E8E2D8", margin: "20px 0" }} />
+              <div style={{ fontSize: 13, color: "#7A7268", lineHeight: 1.6 }}>
+                <strong style={{ color: "#5A5248" }}>Why AI stage matters:</strong> Organizations piloting AI without structural compression are in the Additive Trap — paying for AI speed while maintaining coordination overhead.
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 28 }}>
+                <button className="nav-back-btn" onClick={() => setStep(2)}>← Back</button>
+                <button className="nav-next-btn" onClick={() => setStep(4)}>Calculate →</button>
+              </div>
+            </div>
+          </Card>
+
+          {/* ── STEP 4: Email gate ── */}
+          <Card visible={step === 4}>
+            <div className="cdc-card-inner">
+              <StepLabel text="Step 4 of 4" />
+              <CardTitle>Your Result</CardTitle>
+              <CardSub>Your Coordination Debt has been calculated. Enter your email to reveal the full breakdown and 3-year projection.</CardSub>
+
+              <div style={{ background: "#F0EBE0", border: "1px solid #DDD8CE", padding: 32, borderRadius: 2, marginBottom: 24 }}>
+                {/* Hidden number — shows $?.?M until revealed */}
+                <div style={{ marginBottom: 24 }}>
+                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 52, color: "#9A7A3A", lineHeight: 1, marginBottom: 6 }}>
+                    $?.?M
+                  </div>
+                  <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 3, color: "#7A7268", textTransform: "uppercase" }}>
+                    Your Estimated Annual Coordination Debt
+                  </div>
+                  <div style={{ fontSize: 12, color: "#AAA09A", marginTop: 8 }}>
+                    Enter your email below to reveal your exact number
+                  </div>
+                </div>
+
+                <div style={{ height: 1, background: "#DDD8CE", marginBottom: 24 }} />
+
+                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, color: "#1A1714", marginBottom: 6 }}>
+                  Unlock your full analysis
+                </div>
+                <div style={{ fontSize: 13, color: "#7A7268", lineHeight: 1.6, marginBottom: 24 }}>
+                  Get your complete breakdown: the four coordination taxes costing you the most, your 3-year compounding projection, and three specific recommendations for your org type.
+                </div>
+
+                <div className="input-row" style={{ display: "flex", gap: 10, marginBottom: 10 }}>
+                  <input type="email" className="cdc-text-input" placeholder="your@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+                  <button className="submit-btn" disabled={!isEmailValid} onClick={handleReveal}>Reveal →</button>
+                </div>
+                <div className="input-row" style={{ display: "flex", gap: 12, marginBottom: 12 }}>
+                  <input type="text" className="cdc-text-input" placeholder="Your name (optional)" value={userName} onChange={(e) => setUserName(e.target.value)} style={{ flex: 1 }} />
+                  <input type="text" className="cdc-text-input" placeholder="Company (optional)" value={company} onChange={(e) => setCompany(e.target.value)} style={{ flex: 1 }} />
+                </div>
+                <div style={{ fontSize: 11, color: "#AAA09A", lineHeight: 1.5 }}>
+                  No spam. Used only to send your report. Unsubscribe anytime.
+                </div>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <button className="nav-back-btn" onClick={() => setStep(3)}>← Back</button>
+                <div />
+              </div>
+            </div>
+          </Card>
+
+          {/* ── RESULT PANEL ── */}
+          {resultRevealed && (
+            <div style={{ animation: "fadeUp 0.4s ease" }}>
+
+              {/* Hero — NOW shows the real number */}
+              <div style={{ background: "#1A1714", borderRadius: 3, padding: 40, textAlign: "center", marginBottom: 20, position: "relative", overflow: "hidden" }}>
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg,#9A7A3A,#C8A96E,#9A7A3A)" }} />
+                <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 3, color: "#7A7268", textTransform: "uppercase", marginBottom: 12 }}>
+                  Estimated Coordination Debt Analysis · from7to3.com
+                </div>
+                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 16, color: "#7A7268", marginBottom: 24 }}>
+                  {orgName}
+                </div>
+                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(52px,10vw,80px)", color: "#C8A96E", lineHeight: 1, marginBottom: 8 }}>
+                  {fmt(debt)}
+                </div>
+                <div style={{ fontSize: 13, color: "#7A7268", marginBottom: 24 }}>
+                  estimated annual coordination debt
+                </div>
+                <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 12, color: "#5A5248", background: "#111", padding: "12px 20px", borderRadius: 2, display: "inline-block", marginBottom: 16 }}>
+                  {headcount.toLocaleString()} × {Math.round(overheadPct * 100)}% × {fmt(avgCost)}
+                </div>
+                <div style={{ fontSize: 11, color: "#5A5248", fontStyle: "italic" }}>
+                  This estimate is directional and intended for executive planning, not formal accounting.
+                </div>
+              </div>
+
+              {/* Formula breakdown — shown in reveal */}
+              <div style={{ background: "#FAFAF6", border: "1px solid #DDD8CE", borderRadius: 2, padding: 32, marginBottom: 20, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 3, color: "#9A7A3A", textTransform: "uppercase", marginBottom: 20 }}>How Your Number Was Calculated</div>
+
+                {/* Formula cells */}
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
+                  {[
+                    { label: "Total Headcount", value: headcount.toLocaleString(), sub: "Your org size" },
+                    { op: "×" },
+                    { label: "Overhead Rate", value: `${Math.round(overheadPct * 100)}%`, sub: "Coordination overhead" },
+                    { op: "×" },
+                    { label: "Avg. Cost", value: fmt(avgCost), sub: "Per employee / year" },
+                    { op: "=" },
+                    { label: "Coordination Debt", value: fmt(debt), sub: "Annual structural cost", highlight: true },
+                  ].map((item, i) => {
+                    if ("op" in item) {
+                      return <div key={i} style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, color: "#AAA09A", flexShrink: 0 }}>{item.op}</div>;
+                    }
+                    return (
+                      <div key={i} style={{ flex: 1, minWidth: 90, background: item.highlight ? "#1A1714" : "#F5F0E8", border: `1px solid ${item.highlight ? "#3A3028" : "#DDD8CE"}`, borderRadius: 2, padding: "14px 12px", textAlign: "center" }}>
+                        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 1, color: item.highlight ? "#9A7A3A" : "#AAA09A", textTransform: "uppercase", marginBottom: 6 }}>{item.label}</div>
+                        <div style={{ fontFamily: "'Playfair Display', serif", fontSize: item.highlight ? 20 : 17, color: item.highlight ? "#C8A96E" : "#1A1714", marginBottom: 4 }}>{item.value}</div>
+                        <div style={{ fontSize: 10, color: item.highlight ? "#7A7268" : "#AAA09A" }}>{item.sub}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Source notes */}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
+                  {[
+                    { label: "30% Floor — Validated By", desc: "McKinsey (2022): management overhead consumes 40–65% of management time. LinearB (2023): 57% of feature cycle time is in coordination queues. These sources validate the floor — the Coordination Debt formula itself was developed by Sandeep Panigrahi." },
+                    { label: "Overhead Rate Applied", desc: `You selected ${Math.round(overheadPct * 100)}% — reflecting your org's management layers and approval chain complexity.` },
+                    { label: "Why It Compounds", desc: "Coordination Debt compounds every sprint cycle it goes unaddressed, growing through delayed decisions, rework, and approval latency." },
+                  ].map(({ label, desc }) => (
+                    <div key={label} style={{ background: "#F5F0E8", borderRadius: 2, padding: "14px 12px", border: "1px solid #E8E2D8" }}>
+                      <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#9A7A3A", textTransform: "uppercase", marginBottom: 8 }}>{label}</div>
+                      <div style={{ fontSize: 12, color: "#7A7268", lineHeight: 1.6 }}>{desc}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Download report button */}
+              <div style={{ marginBottom: 20, display: "flex", justifyContent: "flex-end" }}>
+                <button
+                  className="share-btn"
+                  style={{
+                    padding: "12px 24px",
+                    fontSize: 11,
+                    letterSpacing: 2,
+                    background: "#9A7A3A",
+                    color: "#F5F0E8",
+                    borderColor: "#9A7A3A",
+                  }}
+                  onClick={() => {
+                    const html = buildReportHtml(orgName, headcount, avgCost, overheadPct, debt, industry, orgMaturity, aiStage, projectionRows, taxes, taxAmounts, recommendations);
+                    const blob = new Blob([html], { type: "text/html" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `Coordination-Debt-Report-${orgName.replace(/[^a-z0-9]/gi, "-")}.html`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                >
+                  ↓ Download Full Report (Print to PDF)
+                </button>
+              </div>
+
+              {/* Breakdown grid */}
+              <div className="breakdown-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
+                {[
+                  { label: "Annual Debt", value: fmt(debt), sub: "Funding information movement, not output", accent: "#B03030" },
+                  { label: "Monthly Burn", value: fmt(debt / 12), sub: "Per month in structural coordination cost", accent: "#1A1714" },
+                  { label: "Compression Opportunity", value: fmt(debt * 0.67), sub: "Recoverable through three-layer restructure", accent: "#9A7A3A" },
+                  { label: "Coordination Roles", value: `~${Math.round(headcount * overheadPct).toLocaleString()}`, sub: "Estimated FTEs in primary coordination functions", accent: "#1A1714" },
+                ].map(({ label, value, sub, accent }) => (
+                  <div key={label} style={{ background: "#FAFAF6", border: "1px solid #DDD8CE", borderRadius: 2, padding: 24, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                    <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 2, color: "#AAA09A", textTransform: "uppercase", marginBottom: 8 }}>{label}</div>
+                    <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, color: accent, marginBottom: 4 }}>{value}</div>
+                    <div style={{ fontSize: 12, color: "#7A7268", lineHeight: 1.5 }}>{sub}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* 3-Year projection */}
+              <div style={{ background: "#FAFAF6", border: "1px solid #DDD8CE", borderRadius: 2, padding: 32, marginBottom: 20, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 3, color: "#9A7A3A", textTransform: "uppercase", marginBottom: 8 }}>3-Year Compounding Projection</div>
+                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, color: "#1A1714", marginBottom: 20 }}>What inaction costs</div>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, marginBottom: 16 }}>
+                  <thead>
+                    <tr>
+                      {["Year", "Coord. Cost", "Cost/Feature", "vs. Competitor"].map((h) => (
+                        <th key={h} style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 2, textTransform: "uppercase", color: "#AAA09A", textAlign: "left", padding: "10px 14px", borderBottom: "1px solid #E8E2D8", background: "#F5F0E8" }}>
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {projectionRows.map((row, idx) => (
+                      <tr key={idx} className={row.isCompetitor ? "proj-row-competitor" : "proj-row-yours"}>
+                        <td style={{ padding: "14px 14px", borderBottom: "1px solid #EDE8DE", verticalAlign: "top" }}>
+                          <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11 }}>{row.year}</span>
+                          <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#AAA09A", display: "block", marginTop: 2 }}>{row.label}</span>
+                        </td>
+                        <td style={{ padding: "14px 14px", borderBottom: "1px solid #EDE8DE", verticalAlign: "top" }}>
+                          {fmt(row.coordCost)}
+                          {idx === 1 && <span style={{ fontSize: 11, color: "#B03030", marginLeft: 6 }}>+28%</span>}
+                          {idx === 2 && <span style={{ fontSize: 11, color: "#B03030", marginLeft: 6 }}>+61%</span>}
+                        </td>
+                        <td style={{ padding: "14px 14px", borderBottom: "1px solid #EDE8DE", verticalAlign: "top" }}>{fmt(row.costPerFeature)}</td>
+                        <td style={{ padding: "14px 14px", borderBottom: "1px solid #EDE8DE", verticalAlign: "top" }}>{row.vsCompetitor}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div style={{ fontSize: 12, color: "#7A7268", borderLeft: "2px solid #9A7A3A", paddingLeft: 14, lineHeight: 1.6 }}>
+                  By Year 3, a competitor who compressed in Year 1 can underprice you by 40% while maintaining margins. Both organizations have AI. The divergence is structural.
+                </div>
+              </div>
+
+              {/* Four taxes */}
+              <div style={{ background: "#FAFAF6", border: "1px solid #DDD8CE", borderRadius: 2, padding: 32, marginBottom: 20, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: 3, color: "#9A7A3A", textTransform: "uppercase", marginBottom: 8 }}>Your Coordination Taxes</div>
+                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, color: "#1A1714", marginBottom: 20 }}>Where the debt comes from</div>
+                {taxes.map((tax, i) => (
+                  <div key={tax.n} style={{ display: "flex", gap: 20, alignItems: "flex-start", padding: "16px 0", borderBottom: i < taxes.length - 1 ? "1px solid #E8E2D8" : "none" }}>
+                    <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: "#9A7A3A", minWidth: 28, paddingTop: 3 }}>TAX {tax.n}</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 4, flexWrap: "wrap" }}>
+                        <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 17, color: "#1A1714" }}>{tax.name}</span>
+                        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 13, color: "#B03030" }}>{fmt(taxAmounts[i])}/yr</span>
+                      </div>
+                      <div style={{ fontSize: 13, color: "#7A7268", lineHeight: 1.6, marginBottom: 6 }}>{tax.desc}</div>
+                      <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: "#AAA09A" }}>{tax.stat}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Recommendations */}
+              <div style={{ background: "#FAFAF6", border: "1px solid #DDD8CE", borderRadius: 2, padding: 32, marginBottom: 20, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, color: "#1A1714", marginBottom: 20 }}>Three Actions for Your Org</div>
+                {recommendations.map((rec, i) => (
+                  <div key={i} style={{ display: "flex", gap: 16, alignItems: "flex-start", padding: "16px 0", borderBottom: i < recommendations.length - 1 ? "1px solid #E8E2D8" : "none" }}>
+                    <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#9A7A3A", minWidth: 24, paddingTop: 2 }}>0{i + 1}</div>
+                    <div style={{ fontSize: 14, color: "#5A5248", lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: rec.text }} />
+                  </div>
+                ))}
+              </div>
+
+              {/* Share bar */}
+              <div style={{ background: "#F0EBE0", border: "1px solid #DDD8CE", borderRadius: 2, padding: "24px 28px", marginBottom: 20 }}>
+                <div className="share-bar-inner" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+                  <div style={{ fontSize: 13, color: "#7A7268", lineHeight: 1.5, flex: 1 }}>
+                    Share your result. When a CTO and CFO see this number together, the structural conversation starts.
+                  </div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button className="share-btn" onClick={handleCopy}>{copyLabel}</button>
+                    <button className="share-btn" onClick={handleLinkedIn}>LinkedIn</button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Book CTA */}
+              <div style={{ background: "#1A1714", border: "1px solid #3A3028", borderRadius: 2, padding: 32, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
+                <div>
+                  <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: 3, color: "#9A7A3A", textTransform: "uppercase", marginBottom: 8 }}>Next Step</div>
+                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, color: "#F5F0E8", marginBottom: 6 }}>FROM 7 TO 3</div>
+                  <div style={{ fontSize: 13, color: "#7A7268" }}>The operating manual for closing this gap — the Token Learning Control™ (TLC) framework.</div>
+                </div>
+                <button className="bc-btn" onClick={() => window.open("https://a.co/d/0cuWOm1F", "_blank")}>Get the Book →</button>
+              </div>
+
+              {/* Footer */}
+              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: "#AAA09A", textAlign: "center", lineHeight: 1.8, marginTop: 20 }}>
+                <div style={{ marginBottom: 6 }}>
+                  The Coordination Debt formula (Headcount × Overhead% × Fully-Loaded Cost) was developed by Sandeep Panigrahi
+                  and is introduced in <em style={{ fontStyle: "italic" }}>FROM 7 TO 3</em> (Constraint Press, 2026).
+                </div>
+                <div style={{ marginBottom: 6 }}>
+                  The 30% overhead floor is validated by independent research: McKinsey Global Institute (2022) ·
+                  LinearB Engineering Benchmarks (2023) · HBR (2017) · Ewens &amp; Giroud, NBER Working Paper 34162 (2025).
+                  These sources validate the inputs; they did not originate the formula.
+                </div>
+                <div>© 2026 Sandeep Panigrahi · from7to3.com · Token Learning Control™ (TLC)</div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}

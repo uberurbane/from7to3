@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
 
 const authorityBullets = [
   "Diagnose Coordination Debt™",
@@ -115,7 +114,7 @@ export default function TemplatesPage() {
             <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-12">
 
               <div className="flex flex-col justify-center">
-                <span className="mb-6 inline-flex w-fit items-center rounded-full border border-teal/20 bg-teal/5 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">
+                <span className="mb-6 inline-flex w-fit items-center rounded-full border border-teal/20 bg-[#9A7A3A]/5 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-teal uppercase">
                   TLC Starter Kit
                 </span>
                 <h1 className="mb-5 text-4xl font-bold leading-[1.06] tracking-[-0.02em] text-foreground sm:text-5xl">
@@ -130,8 +129,8 @@ export default function TemplatesPage() {
                 <ul className="mb-8 flex flex-col gap-3">
                   {authorityBullets.map((bullet) => (
                     <li key={bullet} className="flex items-center gap-3">
-                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-teal/25 bg-teal/5">
-                        <div className="h-1.5 w-1.5 rounded-full bg-teal" />
+                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-teal/25 bg-[#9A7A3A]/5">
+                        <div className="h-1.5 w-1.5 rounded-full bg-[#9A7A3A]" />
                       </div>
                       <span className="text-sm text-foreground/80">{bullet}</span>
                     </li>
@@ -201,7 +200,7 @@ export default function TemplatesPage() {
                     className="rounded-md border border-border bg-white p-5 shadow-sm"
                   >
                     <div className="mb-2 flex items-center gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-teal" />
+                      <div className="h-1.5 w-1.5 rounded-full bg-[#9A7A3A]" />
                       <p className="text-sm font-semibold text-foreground">
                         {reason.title}
                       </p>
@@ -229,7 +228,7 @@ export default function TemplatesPage() {
             </div>
 
             <div className="relative">
-              <div className="absolute left-5 top-2 bottom-2 w-px bg-teal/15 hidden sm:block" />
+              <div className="absolute left-5 top-2 bottom-2 w-px bg-[#9A7A3A]/15 hidden sm:block" />
               <div className="flex flex-col gap-0">
                 {steps.map((step) => (
                   <div
@@ -294,7 +293,7 @@ export default function TemplatesPage() {
                     className="flex flex-col gap-4 rounded-md border border-border bg-white p-6 shadow-sm"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-teal/20 bg-teal/5">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-teal/20 bg-[#9A7A3A]/5">
                         <Icon className="size-4 text-teal" />
                       </div>
                       <h3 className="text-sm font-semibold text-foreground">
@@ -338,7 +337,7 @@ export default function TemplatesPage() {
         </section>
 
       </main>
-      <Footer />
+      
     </>
   );
 }
