@@ -41,7 +41,7 @@ export default function Hero() {
         <div className="flex flex-col items-center justify-center">
           <Link href={amazonLink} target="_blank" rel="noopener noreferrer">
             <img
-              src="/from_7_to_3_book_v2.png"
+              src="/from_7_to_3_book_no_BG.png"
               alt="From 7 to 3 book cover"
               className="h-[470px] w-auto object-contain"
             />
