@@ -1,13 +1,6 @@
 "use client";
 
 import React, { useState, useMemo, useCallback } from "react";
-import { createClient } from "@supabase/supabase-js";
-
-
-const supabaseBrowser = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -564,27 +557,27 @@ export default function CoordinationDebtCalculator() {
     try {
       const params = new URLSearchParams(window.location.search);
 
-      const { error } = await supabaseBrowser
-        .from("coordination_debt_leads")
-        .insert({
+      await fetch("/api/calculator-lead", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           email,
-          user_name: userName,
+          userName,
           company,
           headcount,
-          avg_cost: avgCost,
-          overhead_pct: overheadPct,
+          avgCost,
+          overheadPct,
           industry,
-          org_maturity: orgMaturity,
-          ai_stage: aiStage,
-          estimated_debt: debt,
-          utm_source: params.get("utm_source"),
-          utm_campaign: params.get("utm_campaign"),
-          utm_medium: params.get("utm_medium"),
-        });
-
-      if (error) {
-        console.error("Supabase lead capture failed:", error.message);
-      }
+          orgMaturity,
+          aiStage,
+          estimatedDebt: debt,
+          utmSource: params.get("utm_source"),
+          utmCampaign: params.get("utm_campaign"),
+          utmMedium: params.get("utm_medium"),
+        }),
+      });
     } catch (error) {
       console.error("Calculator lead capture failed:", error);
     }
