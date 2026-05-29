@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export default function SampleChapterPage() {
   return (
-    <main className="min-h-screen bg-white text-slate-950">
-      <section className="border-b border-slate-200">
+    <main className="min-h-screen bg-[#F5F0E8] text-slate-950">
+      <section className="border-b border-[#DDD8CE]">
         <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
           <div>
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-teal-700">
